@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BBB — Content Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --tomato:    #C8481E;
+      --tomato-lt: #D9613A;
+      --sand:      #E8DECE;
+      --sand-bg:   #F2EDE3;
+      --cream:     #FAF7F2;
+      --royal:     #253880;
+      --royal-lt:  #3A51A0;
+      --navy:      #19244F;
+      --blue-soft: #8FA4CC;
+      --taupe:     #4A4235;
+      --taupe-lt:  #7A6E60;
+      --border:    rgba(74,66,53,0.12);
+      --green:     #3A7D5C;
+      --green-lt:  #EAF4EE;
+      --amber:     #B8842A;
+      --amber-lt:  #FBF3E4;
+      --sidebar-w: 232px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #F0EBE1;
+      color: var(--taupe);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top:0; left:0; bottom:0;
+      z-index: 50;
+    }
+    .sidebar-logo {
+      padding: 1.5rem 1.4rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sidebar-logo-name {
+      font-family: 'Jost', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sand);
+    }
+    .sidebar-logo-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+    .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
+
+    .sidebar-section-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      padding: 0.65rem 1.4rem 0.35rem;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0.5rem 1.4rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.18s, background 0.18s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar-link svg { opacity: 0.55; flex-shrink: 0; transition: opacity 0.18s; }
+    .sidebar-link:hover { color: rgba(255,255,255,0.82); background: rgba(255,255,255,0.05); }
+    .sidebar-link:hover svg { opacity: 0.8; }
+    .sidebar-link.active { color: #fff; background: rgba(200,72,30,0.22); }
+    .sidebar-link.active svg { opacity: 1; color: var(--tomato-lt); }
+
+    /* coming-soon nav items — greyed out, not clickable */
+    .sidebar-link.soon {
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* collapsible extra nav */
+    .nav-extra {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease;
+    }
+    .nav-extra.open { max-height: 400px; }
+
+    /* toggle button */
+    .nav-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0.45rem 1.4rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      margin-top: 0.5rem;
+      transition: color 0.18s;
+    }
+    .nav-toggle:hover { color: rgba(255,255,255,0.55); }
+    .nav-toggle-icon {
+      width: 14px; height: 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.28s;
+    }
+    .nav-toggle-icon.open { transform: rotate(45deg); }
+
+    .sidebar-bottom {
+      padding: 1rem 1.4rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sidebar-user { display:flex; align-items:center; gap:0.7rem; }
+    .sidebar-avatar {
+      width: 28px; height: 28px;
+      background: var(--tomato);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar-user-name { font-family:'Jost',sans-serif; font-size:11px; font-weight:600; color:rgba(255,255,255,0.68); }
+    .sidebar-user-role { font-size:10px; color:rgba(255,255,255,0.28); }
+
+    /* ── MAIN ── */
+    .main { margin-left: var(--sidebar-w); flex:1; min-height:100vh; display:flex; flex-direction:column; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--cream);
+      border-bottom: 1px solid var(--sand);
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top:0; z-index:40;
+    }
+    .topbar-title {
+      font-family: 'Jost', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--taupe);
+    }
+    .topbar-actions { display:flex; align-items:center; gap:0.6rem; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-green  { background: var(--green-lt); color: var(--green); }
+    .badge-amber  { background: var(--amber-lt); color: var(--amber); }
+    .badge-blue   { background: rgba(37,56,128,0.08); color: var(--royal); }
+    .badge-tomato { background: rgba(200,72,30,0.1); color: var(--tomato); }
+    .badge-dot    { width:5px; height:5px; border-radius:50%; background:currentColor; }
+
+    /* ── CONTENT ── */
+    .content { padding: 2rem; flex:1; max-width: 1100px; }
+
+    /* ── SECTION HEADER ── */
+    .section-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.25rem; }
+    .section-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px; font-weight:700;
+      letter-spacing: 0.28em; text-transform:uppercase;
+      color: var(--tomato); margin-bottom:4px;
+    }
+    .section-h {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight:600;
+      color: var(--taupe); line-height:1.2;
+    }
+    .section-h em { font-style:italic; font-weight:400; color:var(--tomato); }
+
+    /* ── CARD ── */
+    .card { background:var(--cream); border:1px solid var(--sand); padding:1.5rem; }
+    .card-sm { padding:1rem 1.2rem; }
+
+    /* ── GRID ── */
+    .two-col   { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; }
+    .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; }
+    .four-col  { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+
+    /* ── LABEL ── */
+    .label {
+      font-family: 'Jost', sans-serif;
+      font-size:9px; font-weight:700;
+      letter-spacing:0.24em; text-transform:uppercase;
+      color:var(--taupe-lt); margin-bottom:0.6rem; display:block;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { height:1px; background:var(--sand); margin:1.75rem 0; }
+
+    /* ── BRAND VIEW ── */
+    .brand-hero {
+      background: var(--navy);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .brand-hero-text {}
+    .brand-hero-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px; font-weight:700;
+      letter-spacing:0.3em; text-transform:uppercase;
+      color: var(--blue-soft); margin-bottom:0.75rem;
+    }
+    .brand-hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight:600;
+      color: var(--sand); line-height:1.2;
+      margin-bottom:0.75rem;
+    }
+    .brand-hero-title em { font-style:italic; font-weight:400; color:var(--tomato-lt); }
+    .brand-hero-sub {
+      font-size: 13px; font-weight:300;
+      color: rgba(255,255,255,0.5);
+      line-height:1.7; max-width:480px;
+    }
+    .brand-status {
+      display: flex; flex-direction:column; gap:0.5rem; flex-shrink:0;
+    }
+    .brand-status-item {
+      display: flex; align-items:center; gap:8px;
+      font-family:'Jost',sans-serif; font-size:10px; font-weight:600;
+      letter-spacing:0.08em; text-transform:uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .bsi-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+    .bsi-dot.amber { background:var(--amber); }
+    .bsi-dot.tomato { background:var(--tomato-lt); }
+
+    /* profile field */
+    .profile-field { margin-bottom:1.25rem; }
+    .profile-field:last-child { margin-bottom:0; }
+    .profile-field-label {
+      font-family:'Jost',sans-serif;
+      font-size:9px; font-weight:700;
+      letter-spacing:0.22em; text-transform:uppercase;
+      color:var(--tomato); margin-bottom:0.4rem; display:block;
+    }
+    .profile-field-value {
+      font-size:13px; color:var(--taupe);
+      line-height:1.75; font-weight:400;
+    }
+    .profile-field-value strong { font-weight:600; color:var(--taupe); }
+    .profile-field-value em { font-style:italic; color:var(--taupe-lt); }
+
+    /* pill tags */
+    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:0.5rem; }
+    .tag {
+      font-family:'Jost',sans-serif;
+      font-size:10px; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      padding:3px 10px;
+      background:var(--sand-bg); color:var(--taupe-lt);
+      border:1px solid var(--sand);
+    }
+    .tag.t-tomato { background:rgba(200,72,30,0.08); color:var(--tomato); border-color:rgba(200,72,30,0.2); }
+    .tag.t-royal  { background:rgba(37,56,128,0.07); color:var(--royal); border-color:rgba(37,56,128,0.18); }
+    .tag.t-green  { background:var(--green-lt); color:var(--green); border-color:rgba(58,125,92,0.2); }
+    .tag.t-amber  { background:var(--amber-lt); color:var(--amber); border-color:rgba(184,132,42,0.2); }
+
+    /* audience card */
+    .audience-card {
+      background:var(--cream); border:1px solid var(--sand);
+      border-top:3px solid var(--sand);
+      padding:1.25rem;
+    }
+    .audience-card.a-tomato { border-top-color:var(--tomato); }
+    .audience-card.a-royal  { border-top-color:var(--royal); }
+    .audience-card.a-navy   { border-top-color:var(--navy); }
+    .audience-name {
+      font-family:'Jost',sans-serif;
+      font-size:11px; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--taupe); margin-bottom:0.35rem;
+    }
+    .audience-desc {
+      font-size:12px; color:var(--taupe-lt);
+      line-height:1.65; margin-bottom:0.75rem;
+    }
+    .audience-wants {
+      font-size:11px; color:var(--taupe-lt);
+      line-height:1.6;
+    }
+    .audience-wants li { margin-left:1rem; margin-bottom:2px; }
+
+    /* content type card */
+    .ctype-card {
+      background:var(--cream); border:1px solid var(--sand);
+      border-left:3px solid var(--sand);
+      padding:1rem 1.1rem;
+    }
+    .ctype-card.ct-tomato { border-left-color:var(--tomato); }
+    .ctype-card.ct-royal  { border-left-color:var(--royal); }
+    .ctype-card.ct-navy   { border-left-color:var(--navy); }
+    .ctype-card.ct-green  { border-left-color:var(--green); }
+    .ctype-name {
+      font-family:'Jost',sans-serif;
+      font-size:10px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--taupe); margin-bottom:4px;
+    }
+    .ctype-freq {
+      font-family:'Jost',sans-serif;
+      font-size:9px; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--tomato); margin-bottom:6px;
+    }
+    .ctype-desc { font-size:12px; color:var(--taupe-lt); line-height:1.6; }
+
+    /* voice block */
+    .voice-block {
+      background:var(--sand-bg); border:1px solid var(--sand);
+      padding:1.25rem; margin-bottom:0.75rem;
+    }
+    .voice-block-label {
+      font-family:'Jost',sans-serif;
+      font-size:9px; font-weight:700;
+      letter-spacing:0.22em; text-transform:uppercase;
+      color:var(--taupe-lt); margin-bottom:0.5rem; display:block;
+    }
+    .voice-quote {
+      font-family:'Playfair Display',serif;
+      font-style:italic; font-size:14px;
+      color:var(--taupe); line-height:1.65;
+    }
+
+    /* ── PIPELINE / TODO / PLATFORMS / SCHEDULE (kept, hidden by default) ── */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .stat-card { background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.35rem; border-top:3px solid var(--sand); }
+    .stat-card.s-tomato { border-top-color:var(--tomato); }
+    .stat-card.s-royal  { border-top-color:var(--royal); }
+    .stat-card.s-navy   { border-top-color:var(--navy); }
+    .stat-card.s-green  { border-top-color:var(--green); }
+    .stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:600; color:var(--taupe); line-height:1; margin-bottom:3px; }
+    .stat-label { font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--taupe-lt); }
+    .stat-sub { font-size:11px; color:var(--taupe-lt); margin-top:2px; }
+
+    .pipeline-board { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .pipeline-col-head { font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--taupe-lt); margin-bottom:0.6rem; display:flex; align-items:center; justify-content:space-between; }
+    .pipeline-col-head span { background:var(--sand); color:var(--taupe-lt); font-size:9px; padding:1px 6px; }
+    .pipeline-card { background:var(--cream); border:1px solid var(--sand); border-left:3px solid var(--sand); padding:0.7rem 0.85rem; margin-bottom:0.6rem; font-size:12px; color:var(--taupe); line-height:1.45; }
+    .pipeline-card.c-tomato { border-left-color:var(--tomato); }
+    .pipeline-card.c-royal  { border-left-color:var(--royal); }
+    .pipeline-card.c-navy   { border-left-color:var(--navy); }
+    .pipeline-card.c-green  { border-left-color:var(--green); }
+    .pipeline-card.c-amber  { border-left-color:var(--amber); }
+    .pipeline-card-type { font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--taupe-lt); margin-bottom:3px; }
+    .pipeline-card-title { font-weight:500; }
+    .pipeline-card-platform { display:flex; gap:4px; margin-top:5px; flex-wrap:wrap; }
+    .plat { font-family:'Jost',sans-serif; font-size:8px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:2px 6px; background:var(--sand-bg); color:var(--taupe-lt); }
+
+    .todo-group { margin-bottom:1.25rem; }
+    .todo-group-title { font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--taupe-lt); padding-bottom:0.5rem; border-bottom:1px solid var(--border); margin-bottom:0.4rem; display:flex; align-items:center; gap:8px; }
+    .todo-count { background:var(--sand); color:var(--taupe-lt); font-size:9px; font-weight:700; padding:1px 7px; border-radius:20px; }
+    .todo-item { display:flex; align-items:flex-start; gap:10px; padding:0.55rem 0.5rem; cursor:pointer; transition:background 0.15s; border-bottom:1px solid rgba(232,222,206,0.45); }
+    .todo-item:last-child { border-bottom:none; }
+    .todo-item:hover { background:var(--sand-bg); }
+    .todo-item.done { opacity:0.45; }
+    .todo-cb { width:16px; height:16px; border:1.5px solid var(--sand); flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; transition:border-color 0.15s,background 0.15s; }
+    .todo-item.done .todo-cb { background:var(--green); border-color:var(--green); }
+    .todo-item.done .todo-cb svg { display:block; }
+    .todo-cb svg { display:none; color:#fff; }
+    .todo-text { font-size:12px; font-weight:400; color:var(--taupe); line-height:1.55; flex:1; }
+    .todo-item.done .todo-text { text-decoration:line-through; color:var(--taupe-lt); }
+    .todo-priority { font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; flex-shrink:0; margin-top:2px; }
+    .p-high  { background:rgba(200,72,30,0.1);  color:var(--tomato); }
+    .p-med   { background:rgba(184,132,42,0.12); color:var(--amber); }
+    .p-build { background:rgba(58,125,92,0.1);   color:var(--green); }
+
+    .platform-card { background:var(--cream); border:1px solid var(--sand); padding:1.25rem; border-top:3px solid var(--sand); }
+    .platform-card.ig  { border-top-color:#C13584; }
+    .platform-card.thr { border-top-color:#000; }
+    .platform-card.li  { border-top-color:#0077B5; }
+    .platform-name { font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--taupe); margin-bottom:0.5rem; display:flex; align-items:center; gap:7px; }
+    .platform-dot { width:7px; height:7px; border-radius:50%; }
+    .platform-card.ig  .platform-dot { background:#C13584; }
+    .platform-card.thr .platform-dot { background:#000; }
+    .platform-card.li  .platform-dot { background:#0077B5; }
+    .platform-voice { font-family:'Playfair Display',serif; font-style:italic; font-size:13px; color:var(--taupe-lt); margin-bottom:0.75rem; line-height:1.5; }
+    .platform-types { display:flex; flex-direction:column; gap:4px; }
+    .platform-type-item { font-size:11px; color:var(--taupe-lt); display:flex; align-items:center; gap:8px; }
+    .platform-type-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--sand); flex-shrink:0; }
+
+    .tools-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .tool-card { background:var(--cream); border:1px solid var(--sand); padding:1rem 1.2rem; display:flex; align-items:center; gap:1rem; }
+    .tool-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Jost',sans-serif; font-weight:800; font-size:12px; }
+    .tool-icon.canva  { background:#7B2FBE; color:#fff; }
+    .tool-icon.claude { background:var(--tomato); color:#fff; }
+    .tool-icon.gemini { background:var(--royal); color:#fff; }
+    .tool-name { font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); }
+    .tool-role { font-size:11px; color:var(--taupe-lt); margin-top:2px; line-height:1.4; }
+
+    .scroll-x { overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="sidebar-logo-name">Books by the Beach</div>
+      <div class="sidebar-logo-sub">Content Pipeline · Admin</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Setup</div>
+    <a class="sidebar-link active" onclick="showView('brand')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Brand Identity
+    </a>
+
+    <a class="sidebar-link" onclick="showView('objective')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Tool Objective
+    </a>
+
+    <div class="sidebar-section-label" style="margin-top:0.75rem;">Pipeline</div>
+    <a class="sidebar-link" onclick="showView('pipeline')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Pipeline
+    </a>
+    <a class="sidebar-link" onclick="showView('todo')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Requirements
+    </a>
+    <a class="sidebar-link" onclick="showView('platforms')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"/></svg>
+      Platforms & Voice
+    </a>
+    <a class="sidebar-link" onclick="showView('schedule')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Weekly Schedule
+    </a>
+
+    <div class="sidebar-section-label" style="margin-top:0.75rem;">Plans</div>
+    <a class="sidebar-link" onclick="showView('plan1')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Plan 1 · Know Elaina
+    </a>
+
+    <!-- Toggle for coming-soon items -->
+    <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNav()">
+      <div class="nav-toggle-icon" id="nav-toggle-icon">
+        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      Coming soon
+    </button>
+
+    <div class="nav-extra" id="nav-extra">
+      <div class="sidebar-section-label">Tools</div>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Canva
+      </a>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg>
+        Claude
+      </a>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Gemini
+      </a>
+      <div class="sidebar-section-label" style="margin-top:0.75rem;">Output</div>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Drafts
+      </a>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Approved
+      </a>
+      <a class="sidebar-link soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analytics
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="/index.html" class="sidebar-link" style="padding-left:0; margin-bottom:0.65rem;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to site
+    </a>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">E</div>
+      <div>
+        <div class="sidebar-user-name">Elaina</div>
+        <div class="sidebar-user-role">Founder · Head Lead</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Brand Identity</div>
+    <div class="topbar-actions">
+      <span class="badge badge-green"><span class="badge-dot"></span>Live</span>
+      <span class="badge badge-blue">BBB Admin</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════════
+         VIEW: BRAND IDENTITY
+    ══════════════════════════════════════ -->
+    <div id="view-brand">
+
+      <div class="brand-hero">
+        <div class="brand-hero-text">
+          <div class="brand-hero-eyebrow">AI Brand Brief · Source of Truth</div>
+          <h1 class="brand-hero-title">Who is BBB —<br>and who is <em>Elaina</em></h1>
+          <p class="brand-hero-sub">Everything the AI reads before writing a single word. This is the foundation every piece of content is built on.</p>
+        </div>
+        <div class="brand-status">
+          <div class="brand-status-item"><span class="bsi-dot"></span>Brand brief: set</div>
+          <div class="brand-status-item"><span class="bsi-dot amber"></span>Audience: drafting</div>
+          <div class="brand-status-item"><span class="bsi-dot tomato"></span>Content types: building</div>
+        </div>
+      </div>
+
+      <!-- Row 1: Who is Elaina + Who is BBB -->
+      <div class="two-col" style="align-items:start;">
+
+        <div class="card">
+          <div class="label">Who is Elaina</div>
+          <div class="profile-field">
+            <span class="profile-field-label">Name & Role</span>
+            <div class="profile-field-value">
+              <strong>Elaina</strong> — Founder and Head Lead of Books by the Beach (BBB) and Fluency Mastermind. Based in Seoul & Busan, Korea.
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Her story</span>
+            <div class="profile-field-value">
+              Elaina built BBB from scratch — Korea's only all-English reading society. She ran the first session with just a handful of people and turned it into a thriving community of professionals across Seoul and Busan. She's lived the journey from <em>anxious, insecure, and highly self-conscious</em> to <strong>grounded, controlled, and deeply purposeful</strong> — and that transformation shapes everything she creates.
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Her mission</span>
+            <div class="profile-field-value">
+              Helping professionals <strong>think sharp and speak clear</strong> through the power of critical reading. She believes real English fluency comes from authentic engagement — not study alone.
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Her values</span>
+            <div class="tags">
+              <span class="tag t-tomato">#Courage</span>
+              <span class="tag t-tomato">#Challenge</span>
+              <span class="tag t-tomato">#Curiosity</span>
+              <span class="tag t-royal">Growth mindset</span>
+              <span class="tag t-royal">Active listening</span>
+              <span class="tag t-royal">No judgment</span>
+              <span class="tag">Community over performance</span>
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Voice in one line</span>
+            <div class="voice-block" style="margin-top:0.4rem;">
+              <span class="voice-quote">"Bold, warm, intellectually direct. Speaks like a trusted mentor who's been through it — not a polished brand."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">What is BBB</div>
+          <div class="profile-field">
+            <span class="profile-field-label">Full name</span>
+            <div class="profile-field-value"><strong>Books by the Beach</strong> — Korea's all-English Reading Society. Active in Seoul and Busan.</div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">What it is</span>
+            <div class="profile-field-value">
+              A community of driven professionals who meet regularly to read, discuss, and grow — entirely in English. <em>Not a casual book club.</em> A structured, high-discourse environment where members sharpen their critical thinking, presentation skills, and leadership through deep reading.
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">What makes it different</span>
+            <div class="profile-field-value">
+              BBB is built on the belief that <strong>real English fluency is earned through real conversations about real ideas</strong> — not through textbooks. Every session is in English. Every member is pushed to speak, share, and lead.
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Event formats</span>
+            <div class="tags">
+              <span class="tag t-royal">Real Talk workshops</span>
+              <span class="tag t-royal">BYOB reading nights</span>
+              <span class="tag t-royal">PPT Nights</span>
+              <span class="tag t-royal">Panel discussions</span>
+              <span class="tag">Corporate workshops</span>
+              <span class="tag">Partnership events</span>
+            </div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Brand handle</span>
+            <div class="profile-field-value"><strong>@booksbythebeachkr</strong> — Instagram, Threads, LinkedIn</div>
+          </div>
+          <div class="profile-field">
+            <span class="profile-field-label">Aesthetic in one line</span>
+            <div class="voice-block" style="margin-top:0.4rem;">
+              <span class="voice-quote">"Literary magazine meets warm gathering. Warm linen tones, editorial serif type, real community photography."</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Target Audience -->
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Who BBB is for</div>
+          <h2 class="section-h">Target <em>audience</em></h2>
+        </div>
+      </div>
+
+      <div class="three-col" style="margin-bottom:1.5rem;">
+        <div class="audience-card a-tomato">
+          <div class="audience-name">The ambitious professional</div>
+          <div class="audience-desc">Proficient in English, working in Korea. Wants to think and communicate at a higher level — not just pass exams. Has studied abroad or works in international environments.</div>
+          <ul class="audience-wants">
+            <li>Wants to lose the psychological barrier when speaking English</li>
+            <li>Wants peers who challenge them intellectually</li>
+            <li>Wants to lead better, present better, think faster</li>
+          </ul>
+        </div>
+        <div class="audience-card a-royal">
+          <div class="audience-name">The growth-oriented reader</div>
+          <div class="audience-desc">Already reads — or wants to. Believes books are the fastest way to grow. Wants a community that holds them accountable and helps them apply what they read.</div>
+          <ul class="audience-wants">
+            <li>Wants deep conversations, not surface-level chat</li>
+            <li>Wants book recs that actually change how they think</li>
+            <li>Values consistent showing up over perfection</li>
+          </ul>
+        </div>
+        <div class="audience-card a-navy">
+          <div class="audience-name">The expat / multicultural professional</div>
+          <div class="audience-desc">Living in Korea, often isolated in finding community that matches their intellectual level. BBB is one of the rare spaces where they genuinely belong.</div>
+          <ul class="audience-wants">
+            <li>Wants authentic connection across backgrounds</li>
+            <li>Wants to feel at home in an international environment</li>
+            <li>Values warmth, belonging, and intellectual depth together</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Row 3: Content Types -->
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">What we make</div>
+          <h2 class="section-h">Content <em>types</em></h2>
+        </div>
+        <span class="badge badge-tomato">6× per week</span>
+      </div>
+
+      <div class="four-col" style="margin-bottom:1.5rem;">
+        <div class="ctype-card ct-tomato">
+          <div class="ctype-name">Reels</div>
+          <div class="ctype-freq">3× per week</div>
+          <div class="ctype-desc">Elaina speaks directly to camera. Either <strong>storytelling</strong> (personal journey, community moment) or <strong>recommendation</strong> (book, habit, mindset shift). Hook in first 2 seconds. Ends with a nudge.</div>
+        </div>
+        <div class="ctype-card ct-royal">
+          <div class="ctype-name">Event posts</div>
+          <div class="ctype-freq">2× per week</div>
+          <div class="ctype-desc">Announce Real Talk sessions, BYOB nights, workshops, and partnerships. All platforms. Must include logistics (date, time, location, how to join) and create real excitement.</div>
+        </div>
+        <div class="ctype-card ct-navy">
+          <div class="ctype-name">Carousel</div>
+          <div class="ctype-freq">1× per week</div>
+          <div class="ctype-desc">Information-based or storytelling. Swipe-worthy, educational, well-structured. Designed in Canva. Caption adapted per platform. Saves and shares are the goal.</div>
+        </div>
+        <div class="ctype-card ct-green">
+          <div class="ctype-name">Captions</div>
+          <div class="ctype-freq">All posts</div>
+          <div class="ctype-desc">Every piece of content gets a platform-specific caption. Instagram is warm + question. Threads is raw + punchy. LinkedIn is structured + insight-led.</div>
+        </div>
+      </div>
+
+      <!-- Row 4: What BBB is NOT -->
+      <div class="card" style="margin-bottom:1.5rem; border-left:3px solid var(--tomato);">
+        <div class="label">What BBB content is NOT</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;">
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--taupe); margin-bottom:0.4rem;">Not generic</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Never "5 tips to learn English faster." Always rooted in a real BBB moment, session, book, or member story.</div>
+          </div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--taupe); margin-bottom:0.4rem;">Not corporate</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Elaina's voice is warm, direct, and real. No stiff brand-speak. Content should feel like a conversation, not a campaign.</div>
+          </div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--taupe); margin-bottom:0.4rem;">Not shallow</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">BBB's audience is smart and ambitious. Content should challenge, provoke thought, and respect their intelligence.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end view-brand -->
+
+
+    <!-- ══════════════════════════════════════
+         VIEW: PIPELINE
+    ══════════════════════════════════════ -->
+    <div id="view-pipeline" style="display:none;">
+      <div class="stats-row">
+        <div class="stat-card s-tomato"><div class="stat-num">3×</div><div class="stat-label">Reels / week</div><div class="stat-sub">Instagram · Threads</div></div>
+        <div class="stat-card s-royal"><div class="stat-num">2×</div><div class="stat-label">Events / week</div><div class="stat-sub">All platforms</div></div>
+        <div class="stat-card s-navy"><div class="stat-num">1×</div><div class="stat-label">Carousel / week</div><div class="stat-sub">Info + storytelling</div></div>
+        <div class="stat-card s-green"><div class="stat-num">6×</div><div class="stat-label">Posts / week</div><div class="stat-sub">Across 3 platforms</div></div>
+      </div>
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Workflow</div>
+          <h2 class="section-h">This week's <em>pipeline</em></h2>
+        </div>
+      </div>
+      <div class="scroll-x">
+        <div class="pipeline-board" style="min-width:860px;">
+          <div class="pipeline-col">
+            <div class="pipeline-col-head">Research <span>2</span></div>
+            <div class="pipeline-card c-tomato"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">Anxiety & English — how fear of being judged keeps you silent</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div>
+            <div class="pipeline-card c-royal"><div class="pipeline-card-type">Event</div><div class="pipeline-card-title">Real Talk: April session announcement</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span><span class="plat">LI</span></div></div>
+          </div>
+          <div class="pipeline-col">
+            <div class="pipeline-col-head">Drafting <span>2</span></div>
+            <div class="pipeline-card c-amber"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">5 books that changed how I think as a leader</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div>
+            <div class="pipeline-card c-amber"><div class="pipeline-card-type">Carousel</div><div class="pipeline-card-title">Why professionals stop reading — and what happens when they start again</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">LI</span></div></div>
+          </div>
+          <div class="pipeline-col">
+            <div class="pipeline-col-head">Review <span>1</span></div>
+            <div class="pipeline-card c-navy"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">The most dangerous thing you can do is read a book that makes you think</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div>
+          </div>
+          <div class="pipeline-col">
+            <div class="pipeline-col-head">Approved <span>1</span></div>
+            <div class="pipeline-card c-green"><div class="pipeline-card-type">Event</div><div class="pipeline-card-title">BYOB Tuesday — March recap post</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">LI</span></div></div>
+          </div>
+          <div class="pipeline-col">
+            <div class="pipeline-col-head">Scheduled <span>1</span></div>
+            <div class="pipeline-card c-green" style="opacity:0.65;"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">What BBB is — and who it's for</div><div class="pipeline-card-platform"><span class="plat">IG</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:1px;background:var(--sand);margin:1.75rem 0;"></div>
+      <div class="tools-row">
+        <div class="tool-card"><div class="tool-icon claude">C</div><div><div class="tool-name">Claude</div><div class="tool-role">Research, copywriting, caption drafts, quality control</div></div></div>
+        <div class="tool-card"><div class="tool-icon canva">Cv</div><div><div class="tool-name">Canva</div><div class="tool-role">Visual design, carousels, event posts, reels templates</div></div></div>
+        <div class="tool-card"><div class="tool-icon gemini">G</div><div><div class="tool-name">Gemini</div><div class="tool-role">Trend research, topic discovery, additional drafts</div></div></div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         VIEW: REQUIREMENTS
+    ══════════════════════════════════════ -->
+    <div id="view-todo" style="display:none;">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Books by the Beach</div>
+          <h2 class="section-h">Content creation <em>requirements</em></h2>
+        </div>
+        <span class="badge badge-amber">In progress</span>
+      </div>
+      <div class="two-col" style="align-items:start;">
+        <div class="card">
+          <div class="todo-group">
+            <div class="todo-group-title">Core philosophy <span class="todo-count">3</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">AI deeply understands who Elaina is — founder identity, voice, values, and story baked into every piece of content</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Content is tailored — never generic, always grounded in BBB's real community and real events</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Growth mindset embedded throughout — content helps audience grow, not just engage</div><span class="todo-priority p-high">High</span></div>
+          </div>
+          <div class="todo-group">
+            <div class="todo-group-title">Platform strategy <span class="todo-count">4</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Instagram — primary. Reels, carousels, event posts. Warm, visual, community-forward</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Threads — conversational, raw, real-time thoughts. Short, punchy, unfiltered</div><span class="todo-priority p-med">Med</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">LinkedIn — professional, thought leadership. Insights, leadership, corporate English fluency</div><span class="todo-priority p-med">Med</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Different voice per platform — same idea, adapted for each audience and format</div><span class="todo-priority p-high">High</span></div>
+          </div>
+          <div class="todo-group">
+            <div class="todo-group-title">Weekly targets <span class="todo-count">3</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">3× Reels per week — storytelling or recommendation style, direct to audience</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">2× Event announcements — Real Talk, BYOB nights, workshops, partnerships</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">1× Informational carousel — educational, info-based, or storytelling format</div><span class="todo-priority p-high">High</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="todo-group">
+            <div class="todo-group-title">Pipeline to build <span class="todo-count">5</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Step 1 — Claude researches: trends, topics, BBB-relevant themes, book recommendations</div><span class="todo-priority p-build">Build</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Step 2 — Claude drafts: scripts, captions, carousel copy, adapted per platform</div><span class="todo-priority p-build">Build</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Step 3 — Elaina reviews and approves. Accept / request changes in one click</div><span class="todo-priority p-build">Build</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Step 4 — Approved content goes into scheduling queue for the week</div><span class="todo-priority p-build">Build</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Step 5 — Collect post-publish feedback. Feed learnings back to AI. Gets smarter weekly</div><span class="todo-priority p-build">Build</span></div>
+          </div>
+          <div class="todo-group">
+            <div class="todo-group-title">Quality & control <span class="todo-count">3</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">QC layer — AI self-checks drafts against BBB brand, voice, and platform standards before review</div><span class="todo-priority p-high">High</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Feedback loop — note what performed well and why. AI learns and adapts each week</div><span class="todo-priority p-med">Med</span></div>
+            <div class="todo-item" onclick="toggleTodo(this)"><div class="todo-cb"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="todo-text">Elaina always has final say — nothing goes live without her approval. AI is the engine, she's the editor</div><span class="todo-priority p-high">High</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         VIEW: PLATFORMS & VOICE
+    ══════════════════════════════════════ -->
+    <div id="view-platforms" style="display:none;">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Voice guide</div>
+          <h2 class="section-h">Platforms & <em>tone</em></h2>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="platform-card ig"><div class="platform-name"><span class="platform-dot"></span>Instagram</div><div class="platform-voice">"Warm, visual, community-first. Elaina speaking to her people."</div><div class="platform-types"><div class="platform-type-item">Reels — storytelling or recommendation</div><div class="platform-type-item">Carousels — swipe-worthy, educational</div><div class="platform-type-item">Event posts — enticing, clear logistics</div><div class="platform-type-item">Captions — warm, ends with CTA or question</div></div></div>
+        <div class="platform-card thr"><div class="platform-name"><span class="platform-dot"></span>Threads</div><div class="platform-voice">"Raw, real, unfiltered. Short thoughts that spark conversation."</div><div class="platform-types"><div class="platform-type-item">Short punchy takes — opinions, provocations</div><div class="platform-type-item">Behind the scenes — what's really happening</div><div class="platform-type-item">Real Talk teasers — drop a line from the session</div><div class="platform-type-item">Feels like a real person, not a brand</div></div></div>
+        <div class="platform-card li"><div class="platform-name"><span class="platform-dot"></span>LinkedIn</div><div class="platform-voice">"Professional, thought leadership. English fluency meets leadership growth."</div><div class="platform-types"><div class="platform-type-item">Insights from books and Real Talk sessions</div><div class="platform-type-item">Professional English fluency angle</div><div class="platform-type-item">Corporate workshop & partnership announcements</div><div class="platform-type-item">Longer captions, structured, data or story-backed</div></div></div>
+      </div>
+      <div style="height:1px;background:var(--sand);margin:1.75rem 0;"></div>
+      <div class="section-header"><div class="section-header-left"><div class="section-eyebrow">Reels format</div><h2 class="section-h">Two reel <em>modes</em></h2></div></div>
+      <div class="two-col">
+        <div class="card"><div class="label">Mode 1</div><div class="section-h" style="font-size:1.15rem;margin-bottom:.6rem;">Storytelling <em>reels</em></div><p style="font-size:13px;color:var(--taupe-lt);line-height:1.75;">Elaina tells a personal story — her own journey, community moments, or a member's experience. Emotion first, insight second. Hook in first 2 seconds.</p><div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--sand);"><div class="label">Example openers</div><p style="font-size:12px;color:var(--taupe-lt);line-height:1.7;">"I used to go blank every time someone asked me to speak in English..."<br>"The first time I ran Real Talk, only 4 people showed up..."<br>"A member told me something last week that I haven't stopped thinking about..."</p></div></div>
+        <div class="card"><div class="label">Mode 2</div><div class="section-h" style="font-size:1.15rem;margin-bottom:.6rem;">Recommendation <em>reels</em></div><p style="font-size:13px;color:var(--taupe-lt);line-height:1.75;">Elaina recommends something — a book, habit, mindset shift, concept from a session. Structured, clear, confident. Authority without arrogance.</p><div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--sand);"><div class="label">Example openers</div><p style="font-size:12px;color:var(--taupe-lt);line-height:1.7;">"If you're a professional who reads zero books a year, this is for you..."<br>"Three books that will change how you think — not just how you speak..."<br>"The one habit that separates confident English speakers from everyone else..."</p></div></div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         VIEW: WEEKLY SCHEDULE
+    ══════════════════════════════════════ -->
+    <div id="view-schedule" style="display:none;">
+      <div class="section-header"><div class="section-header-left"><div class="section-eyebrow">Content calendar</div><h2 class="section-h">Weekly <em>schedule</em></h2></div><span class="badge badge-blue">6 posts · 7 days</span></div>
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.75rem;">
+          <div><div class="label">Monday</div><div class="pipeline-card c-tomato"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">Storytelling reel</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div></div>
+          <div><div class="label">Tuesday</div><div class="pipeline-card c-royal"><div class="pipeline-card-type">Event</div><div class="pipeline-card-title">Session announcement</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">LI</span></div></div></div>
+          <div><div class="label">Wednesday</div><div class="pipeline-card c-navy"><div class="pipeline-card-type">Carousel</div><div class="pipeline-card-title">Info carousel</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">LI</span></div></div></div>
+          <div><div class="label">Thursday</div><div class="pipeline-card c-tomato"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">Recommendation reel</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div></div>
+          <div><div class="label">Friday</div><div class="pipeline-card c-royal"><div class="pipeline-card-type">Event</div><div class="pipeline-card-title">RSVP reminder</div><div class="pipeline-card-platform"><span class="plat">IG</span><span class="plat">Threads</span></div></div></div>
+          <div><div class="label">Saturday</div><div class="pipeline-card c-tomato" style="opacity:0.6;"><div class="pipeline-card-type">Reels</div><div class="pipeline-card-title">Storytelling reel</div><div class="pipeline-card-platform"><span class="plat">IG</span></div></div></div>
+          <div><div class="label">Sunday</div><div style="padding:0.75rem;background:var(--sand-bg);border:1px dashed var(--sand);font-size:11px;color:var(--taupe-lt);text-align:center;">Rest / buffer</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         VIEW: TOOL OBJECTIVE
+    ══════════════════════════════════════ -->
+    <div id="view-objective" style="display:none;">
+
+      <!-- Manifesto header -->
+      <div style="background:var(--navy); padding:2rem; margin-bottom:1.5rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; color:var(--blue-soft); margin-bottom:0.75rem;">Tool Objective · Hard Requirements</div>
+        <h1 style="font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:600; color:var(--sand); line-height:1.2; margin-bottom:0.85rem;">AI should make us <em style="font-style:italic; color:var(--tomato-lt);">faster</em> —<br>not make us clean up <em style="font-style:italic; color:var(--tomato-lt);">its mess</em></h1>
+        <p style="font-size:13px; font-weight:300; color:rgba(255,255,255,0.48); line-height:1.8; max-width:600px;">A lot of people vibe-code AI slop and ship it. That is not what this is. This tool exists to give one person the output of 50 — without sacrificing the quality, taste, or voice that makes BBB worth following in the first place.</p>
+      </div>
+
+      <!-- The core position -->
+      <div class="two-col" style="align-items:start; margin-bottom:1.5rem;">
+
+        <div class="card" style="border-left:3px solid var(--green);">
+          <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:var(--green); margin-bottom:1rem;">What this tool IS</div>
+
+          <div style="display:flex; flex-direction:column; gap:1rem;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:var(--green-lt); border:1px solid rgba(58,125,92,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3A7D5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">An engine, not a creator</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">AI handles the heavy lifting — research, structure, first drafts, formatting, platform adaptation. Elaina provides the creative vision, the real assets, and the final word.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:var(--green-lt); border:1px solid rgba(58,125,92,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3A7D5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A friction reducer</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">The parts that used to take days — writing 6 platform-adapted captions, scripting 3 reels, building carousel copy — should take minutes. Elaina's job is direction and approval, not execution from scratch.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:var(--green-lt); border:1px solid rgba(58,125,92,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3A7D5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A multiplier of one person</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">What previously required a content strategist, copywriter, designer, scheduler, and social media manager — this tool enables Elaina to do solo, at a high quality standard, consistently.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:var(--green-lt); border:1px solid rgba(58,125,92,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3A7D5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A system that learns</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Every approval, edit, and rejection trains the system. The longer it runs, the less Elaina has to correct — because the AI gets closer to what she would have written herself.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left:3px solid var(--tomato);">
+          <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:var(--tomato); margin-bottom:1rem;">What this tool is NOT</div>
+
+          <div style="display:flex; flex-direction:column; gap:1rem;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:rgba(200,72,30,0.08); border:1px solid rgba(200,72,30,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C8481E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">An autopilot</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Nothing publishes automatically. Nothing goes live without Elaina's eyes on it. The approval step is not optional — it's the whole point.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:rgba(200,72,30,0.08); border:1px solid rgba(200,72,30,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C8481E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A visual generator</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">AI does not generate the visuals. Elaina supplies the photos, videos, and assets — real moments from real events. AI helps design and arrange them in Canva, not replace them with stock or generated imagery.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:rgba(200,72,30,0.08); border:1px solid rgba(200,72,30,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C8481E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A slop machine</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Generic AI content that sounds like every other brand is a failure state, not a starting point. If the output isn't close to publish-ready, the system needs fixing — not Elaina's time.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:24px; height:24px; background:rgba(200,72,30,0.08); border:1px solid rgba(200,72,30,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C8481E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">A substitute for taste</div>
+                <div style="font-size:12px; color:var(--taupe-lt); line-height:1.65;">Elaina's editorial judgment is the product. AI executes it. The moment this tool starts pushing Elaina toward what's easier to generate rather than what's right for BBB, it has failed.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Hard requirements -->
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Non-negotiable</div>
+          <h2 class="section-h">Hard <em>requirements</em></h2>
+        </div>
+        <span class="badge badge-tomato">Must all be true</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.75rem;">
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">01</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Elaina's voice is always the voice</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Every draft must sound like Elaina wrote it. If it reads like AI, it goes back. AI adapts to her — she never adapts her voice to fit AI output.</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">02</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">All visuals are supplied by Elaina</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">No AI-generated imagery. No stock photos. All photos, videos, and assets come from real BBB events and moments. The AI's job is to arrange and design — not to fabricate.</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">03</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Every piece of content is grounded in something real</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">A session, a book, a member story, a real conversation. Nothing is invented for the sake of content. Generic topics that could apply to any brand do not exist here.</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">04</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Drafts must be close to publish-ready</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Minor tweaks, yes. Rewrites from scratch, no. If Elaina is spending more time fixing AI output than she would have writing it herself, the system has failed and needs to be improved — not worked around.</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">05</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Nothing goes live without Elaina's approval</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Every single piece. No exceptions. No scheduled auto-publish without a manual sign-off first. The approval step is the quality gate — removing it breaks the whole model.</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">06</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">The tool must save time, not create new work</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">If any part of this pipeline adds friction, confusion, or cleanup time for Elaina, that part gets rebuilt. The benchmark: is this faster and better than doing it manually?</div>
+          </div>
+          <span class="badge badge-tomato">Hard rule</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">07</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Quality is the metric — not volume</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Hitting 6 posts a week with 6 mediocre pieces is a worse outcome than 4 excellent ones. The schedule is a target, not a mandate. Good content ships. Content that isn't ready doesn't.</div>
+          </div>
+          <span class="badge badge-amber">Principle</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:28px 1fr auto; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1rem 1.25rem;">
+          <div style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--royal); opacity:0.4; line-height:1;">08</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Feedback flows back into the system</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Every edit Elaina makes, every rejection, every "this doesn't sound like me" — feeds back to improve the next output. The system gets tighter over time, not looser.</div>
+          </div>
+          <span class="badge badge-amber">Principle</span>
+        </div>
+
+      </div>
+
+      <!-- The one-line test -->
+      <div style="background:var(--royal); padding:1.75rem 2rem; display:flex; align-items:center; gap:2rem;">
+        <div style="font-family:'Playfair Display',serif; font-size:3.5rem; line-height:0.7; color:rgba(255,255,255,0.15); flex-shrink:0;">"</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; color:var(--sand); line-height:1.6; margin-bottom:0.5rem;">Before anything ships, ask one question: would Elaina have written this herself, and would she be proud to put her name on it?<br>If the answer is no — it doesn't go out.</div>
+          <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue-soft); opacity:0.6;">The quality test · BBB Content Pipeline</div>
+        </div>
+      </div>
+
+    </div><!-- end view-objective -->
+
+    <!-- ══════════════════════════════════════
+         VIEW: PLAN 1 — KNOW ELAINA
+    ══════════════════════════════════════ -->
+    <div id="view-plan1" style="display:none;">
+
+      <!-- Header -->
+      <div style="background:var(--navy); padding:2rem; margin-bottom:1.5rem; display:flex; gap:2rem; align-items:flex-start; justify-content:space-between;">
+        <div>
+          <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; color:var(--blue-soft); margin-bottom:0.5rem;">Plan 1 · First Priority</div>
+          <h1 style="font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:600; color:var(--sand); line-height:1.2; margin-bottom:0.75rem;">Make the AI <em style="font-style:italic; color:var(--tomato-lt);">truly know</em> Elaina</h1>
+          <p style="font-size:13px; font-weight:300; color:rgba(255,255,255,0.45); line-height:1.8; max-width:580px;">Before the AI writes a single word of real content, it needs to deeply understand who Elaina is, what she has built, what has worked, and what sounds like her. Everything else in the pipeline is useless without this foundation being right.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem; flex-shrink:0; min-width:140px;">
+          <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:0.25rem;">Plan status</div>
+          <span class="badge badge-amber" style="justify-content:center;">🔴 Not started</span>
+          <div style="font-family:'Jost',sans-serif; font-size:9px; color:rgba(255,255,255,0.25); margin-top:0.25rem; letter-spacing:0.05em;">12 steps to complete</div>
+        </div>
+      </div>
+
+      <!-- Why this is first -->
+      <div class="card" style="border-left:3px solid var(--tomato); margin-bottom:1.5rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--tomato); margin-bottom:0.75rem;">Why this comes before everything else</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+          <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7;">An AI that doesn't know Elaina will write content that sounds like every other brand. No matter how good the pipeline is, if the AI's starting point is wrong, every output is wrong. Fix the knowledge base first.</div>
+          <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7;">Past content performance is data. It tells us what Elaina's audience responds to, what falls flat, and what tone actually converts. The AI needs this to make smart decisions — not just guess.</div>
+          <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7;">This plan is also the lowest-friction starting point. Most of it requires no technical setup — just structured thinking and gathering. It can be done in sessions without code.</div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow">Execution steps · in order</div>
+          <h2 class="section-h">What we need to <em>figure out</em></h2>
+        </div>
+        <span class="badge badge-blue">12 steps</span>
+      </div>
+
+      <!-- PHASE 1 -->
+      <div style="margin-bottom:0.35rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--taupe-lt); padding:0.5rem 0; border-bottom:1px solid var(--sand); margin-bottom:0.5rem; display:flex; align-items:center; gap:8px;">
+          Phase 1 — Build Elaina's deep profile
+          <span style="font-size:9px; background:var(--sand); color:var(--taupe-lt); padding:1px 8px; font-weight:700;">Steps 1–4</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;">
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">01</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Write Elaina's full voice & identity document</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Go deeper than the Brand Identity page. This is the document the AI reads first. Needs to cover: how Elaina naturally speaks (cadence, tone, sentence length), phrases she uses vs phrases she'd never use, her sense of humour, what she exaggerates vs underplays, the emotional register she operates in, what she finds cringe, what she genuinely cares about vs what she just posts about.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Session work</span>
+              <span class="tag t-tomato">Foundational</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">02</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Map Elaina's full story arc — not just bio, but journey</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Document the transformation story in detail: the before (anxious, insecure, lost), the turning point (BBB, reading, community), and where she is now. This story is the emotional backbone of her content. The AI needs to know this arc so it can reference it authentically — not just mention "she built a book club" but understand the why behind all of it.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Session work</span>
+              <span class="tag t-tomato">Foundational</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">03</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Define BBB's topic universe — the full map of what we talk about</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Every book BBB has read. Every Real Talk theme covered. Every recurring topic: anxiety, identity, leadership, professional English, reading habits, community, Korea expat life. What connects them. What Elaina believes about each one. This becomes the AI's topic pool — a living document it pulls from to make content feel specific and earned, not generated.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Session work</span>
+              <span class="tag">Living document</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">04</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Write "this is Elaina / this is not Elaina" — real examples</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">The most powerful calibration tool. Pull 10–15 real captions, scripts, and posts that are 100% Elaina. Then write their "generic AI" equivalents side by side. This gives the AI a concrete before/after to calibrate against every time it writes. This is how you stop it from producing content that sounds like anyone else.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag t-tomato">High impact</span>
+              <span class="tag">Calibration doc</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PHASE 2 -->
+      <div style="margin-bottom:0.35rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--taupe-lt); padding:0.5rem 0; border-bottom:1px solid var(--sand); margin-bottom:0.5rem; display:flex; align-items:center; gap:8px;">
+          Phase 2 — Pull in all past content
+          <span style="font-size:9px; background:var(--sand); color:var(--taupe-lt); padding:1px 8px; font-weight:700;">Steps 5–7</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;">
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">05</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Do a full content audit — every post, caption, reel script that exists</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Pull every Instagram post, caption, reel, carousel, and event post from @booksbythebeachkr. We need the actual text, the format, and the date. This is the raw archive the AI learns from. We figure out the best way to extract this — API, manual export, or a scraping tool — but we don't need to decide that now. The goal is to have it all in one place.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-royal">Needs method decision</span>
+              <span class="tag">IG API or manual export</span>
+              <span class="tag t-tomato">High impact</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">06</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Tag and classify the archive — what performed, what flopped, what Elaina is proud of</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Once we have the archive, every post needs three labels: (1) engagement performance (high/med/low), (2) content type (reel/carousel/event/etc.), (3) Elaina's personal rating — does she actually love this, or was it just okay? Performance data + taste data together is more powerful than either alone. This tells the AI what to aim for, not just what existed.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Manual tagging</span>
+              <span class="tag">Elaina input required</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">07</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Pull social media performance data — reach, saves, comments, follows per post</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">We need numbers, not feelings. Instagram Insights gives reach, impressions, saves, comments, shares, and profile visits per post. LinkedIn and Threads have their own equivalents. We figure out the most frictionless way to get this data into one place on a regular basis — whether that's a manual monthly export, an API connection, or a third-party tool. The goal: the AI knows what type of content grows the account.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-royal">Needs method decision</span>
+              <span class="tag">IG Insights API or CSV</span>
+              <span class="tag">Recurring process</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PHASE 3 -->
+      <div style="margin-bottom:0.35rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--taupe-lt); padding:0.5rem 0; border-bottom:1px solid var(--sand); margin-bottom:0.5rem; display:flex; align-items:center; gap:8px;">
+          Phase 3 — Build the AI's knowledge system
+          <span style="font-size:9px; background:var(--sand); color:var(--taupe-lt); padding:1px 8px; font-weight:700;">Steps 8–10</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;">
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">08</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Design the master context document — what the AI reads before every session</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">All the knowledge from steps 1–7 needs to be structured into a single, well-organised document the AI loads as context. Not a wall of text — a clear, scannable structure covering: who Elaina is, what BBB is, the topic universe, the voice calibration examples, what's performed well, what the content rules are. We figure out the best format and length to make this fast and effective without burning context window.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">Light technical</span>
+              <span class="tag">Prompt engineering</span>
+              <span class="tag t-tomato">Critical step</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">09</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Figure out how Elaina adds new context — the living update flow</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">After every session Elaina runs — a Real Talk, a BYOB night, a new book read — there's new knowledge the AI should have. We need a zero-friction way for Elaina to add this. A simple input form in this admin? A voice note that gets transcribed? A bullet list she drops in? We decide together what's most natural for how she actually works, then build it into the tool.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-royal">Needs design decision</span>
+              <span class="tag">UX question</span>
+              <span class="tag">Elaina input required</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">10</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Solve persistence — how the AI remembers approvals, edits, and rejections across sessions</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Right now, every conversation with an AI starts from zero. For a long-lived production system, we need memory. When Elaina rejects a draft and says "this is too formal," that feedback needs to persist and affect future generations — not just the current session. We figure out the right approach: a structured feedback log, a fine-tuned system prompt, or a database of corrections that gets folded in. This is one of the most technically involved steps and we can take our time figuring it out.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-royal">More technical</span>
+              <span class="tag">Long-lived system</span>
+              <span class="tag t-tomato">High impact</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PHASE 4 -->
+      <div style="margin-bottom:0.35rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--taupe-lt); padding:0.5rem 0; border-bottom:1px solid var(--sand); margin-bottom:0.5rem; display:flex; align-items:center; gap:8px;">
+          Phase 4 — Test, calibrate, and validate
+          <span style="font-size:9px; background:var(--sand); color:var(--taupe-lt); padding:1px 8px; font-weight:700;">Steps 11–12</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.75rem;">
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">11</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Run the voice test — generate 5 pieces and have Elaina score them honestly</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Once the knowledge base is built, we generate 5 real pieces — 2 reel scripts, 1 carousel, 1 event post, 1 Threads post — and Elaina scores each one out of 10. Anything below 7 means the context document needs work. We iterate until the baseline score is consistently 8+. This is our definition of "ready to move to Plan 2." No point building the rest of the pipeline until the AI can write like Elaina.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Elaina scores output</span>
+              <span class="tag t-green">Gate for Plan 2</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-step" onclick="toggleTodo(this)" style="display:grid; grid-template-columns:20px 32px 1fr; gap:1rem; align-items:start; background:var(--cream); border:1px solid var(--sand); padding:1.1rem 1.25rem; cursor:pointer; transition:background 0.15s;">
+          <div class="todo-cb" style="margin-top:3px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:600; color:var(--royal); opacity:0.3; line-height:1; padding-top:2px;">12</div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:4px;">Document what the AI got wrong — build a "correction log" from the first test</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.7; margin-bottom:8px;">Whatever the AI got wrong in step 11 — write it down. Not just "this is bad" but "this is bad because..." and "here is what I would have written instead." This correction log becomes the first entry in the system's living memory. It folds back into the context document. Over time, this log is one of the most valuable things in the whole system — it's where the AI learns Elaina's actual editorial taste, not just her stated preferences.</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag t-amber">No code needed</span>
+              <span class="tag">Elaina input required</span>
+              <span class="tag">Seeds the memory system</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- What comes after -->
+      <div style="background:var(--sand-bg); border:1px solid var(--sand); border-left:3px solid var(--royal); padding:1.35rem 1.5rem;">
+        <div style="font-family:'Jost',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--royal); margin-bottom:0.75rem;">When Plan 1 is done, we unlock →</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem;">
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Plan 2</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Content generation — research, draft, QC, and approval flow. The AI starts writing real content for the week.</div>
+          </div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Plan 3</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Canva integration — AI designs posts using Elaina's supplied assets and BBB brand templates.</div>
+          </div>
+          <div>
+            <div style="font-family:'Jost',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--taupe); margin-bottom:3px;">Plan 4</div>
+            <div style="font-size:12px; color:var(--taupe-lt); line-height:1.6;">Scheduling, feedback loop, and analytics. The full pipeline running end to end, week after week.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end view-plan1 -->
+
+  </div><!-- end .content -->
+</main>
+
+<script>
+  const views = ['brand','objective','pipeline','todo','platforms','schedule','plan1'];
+  const titles = {
+    brand:     'Brand Identity',
+    objective: 'Tool Objective',
+    pipeline:  'Content Pipeline',
+    todo:      'Requirements',
+    platforms: 'Platforms & Voice',
+    schedule:  'Weekly Schedule',
+    plan1:     'Plan 1 · Know Elaina'
+  };
+
+  function showView(name) {
+    views.forEach(v => {
+      document.getElementById('view-' + v).style.display = (v === name) ? '' : 'none';
+    });
+    document.querySelectorAll('.sidebar-link:not(.soon)').forEach(el => el.classList.remove('active'));
+    const navLinks = document.querySelectorAll('.sidebar-link:not(.soon)');
+    // map view name to nav link index (order matches DOM: brand, objective, pipeline, todo, platforms, schedule, plan1)
+    const map = { brand:0, objective:1, pipeline:2, todo:3, platforms:4, schedule:5, plan1:6 };
+    if (navLinks[map[name]] !== undefined) navLinks[map[name]].classList.add('active');
+    document.getElementById('topbar-title').textContent = titles[name] || 'Admin';
+  }
+
+  function toggleTodo(el) { el.classList.toggle('done'); }
+
+  let navOpen = false;
+  function toggleNav() {
+    navOpen = !navOpen;
+    document.getElementById('nav-extra').classList.toggle('open', navOpen);
+    document.getElementById('nav-toggle-icon').classList.toggle('open', navOpen);
+  }
+</script>
+</body>
+</html>
