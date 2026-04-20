@@ -1,0 +1,15 @@
+:root {
+  --tomato:    #C8481E;
+  --tomato-lt: #D9613A;
+  --sand:      #E8DECE;
+  --sand-bg:   #F2EDE3;
+  --cream:     #FAF7F2;
+  --royal:     #253880;
+  --royal-lt:  #3A51A0;
+  --navy:      #19244F;
+  --blue-soft: #8FA4CC;
+  --taupe:     #4A4235;
+  --taupe-lt:  #7A6E60;
+  --border:    rgba(74, 66, 53, 0.14);
+  --border-b:  rgba(143, 164, 204, 0.22);
+}
