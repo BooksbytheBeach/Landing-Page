@@ -1,0 +1,38 @@
+2026-04-28 21:21:28,351 [WARNING] discord.client: PyNaCl is not installed, voice will NOT be supported
+2026-04-28 21:21:28,351 [WARNING] discord.client: davey is not installed, voice will NOT be supported
+2026-04-28 21:21:28,351 [INFO] discord.client: logging in using static token
+2026-04-28 21:21:29,362 [INFO] bbb: Slash commands synced to guild 1486540776379912313
+2026-04-28 21:21:30,026 [INFO] discord.gateway: Shard ID None has connected to Gateway (Session ID: 9e67da590196bde7e8796e6c442e72cc).
+2026-04-28 21:21:32,043 [INFO] bbb: Logged in as BBB Bot#9262
+2026-04-28 21:21:32,043 [INFO] bbb:   - Books by the Beach (6 members)
+2026-04-28 21:21:32,043 [INFO] bbb: Bot is ready.
+2026-04-28 21:31:51,483 [WARNING] discord.client: PyNaCl is not installed, voice will NOT be supported
+2026-04-28 21:31:51,483 [WARNING] discord.client: davey is not installed, voice will NOT be supported
+2026-04-28 21:31:51,484 [INFO] discord.client: logging in using static token
+2026-04-28 21:31:52,507 [INFO] bbb: Slash commands synced to guild 1486540776379912313
+2026-04-28 21:31:53,503 [INFO] discord.gateway: Shard ID None has connected to Gateway (Session ID: be147c68efb1df972d9dd88e87b763cd).
+2026-04-28 21:31:55,517 [INFO] bbb: Logged in as BBB Bot#9262
+2026-04-28 21:31:55,518 [INFO] bbb:   - Books by the Beach (6 members)
+2026-04-28 21:31:55,518 [INFO] bbb: Bot is ready.
+2026-04-28 21:32:26,165 [INFO] bbb: Welcoming shaddowa in Books by the Beach
+2026-04-28 22:29:31,837 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 22:45:26,432 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 23:02:13,096 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 23:18:34,770 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 23:34:25,079 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 23:51:15,670 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-28 23:57:19,272 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-29 01:24:55,356 [INFO] discord.gateway: Shard ID None session has been invalidated.
+2026-04-29 01:25:01,299 [INFO] discord.gateway: Shard ID None has connected to Gateway (Session ID: a923b7f23e4f493e9254772207a247a7).
+2026-04-29 01:25:03,328 [INFO] bbb: Logged in as BBB Bot#9262
+2026-04-29 01:25:03,329 [INFO] bbb:   - Books by the Beach (6 members)
+2026-04-29 01:25:03,329 [INFO] bbb: Bot is ready.
+2026-05-04 16:01:56,814 [WARNING] discord.client: PyNaCl is not installed, voice will NOT be supported
+2026-05-04 16:01:56,814 [WARNING] discord.client: davey is not installed, voice will NOT be supported
+2026-05-04 16:01:56,815 [INFO] discord.client: logging in using static token
+2026-05-04 16:01:57,894 [INFO] bbb: Slash commands synced to guild 1486540776379912313
+2026-05-04 16:01:58,612 [INFO] discord.gateway: Shard ID None has connected to Gateway (Session ID: b86d15b1dc31290182d056b972893bb5).
+2026-05-04 16:02:00,655 [INFO] bbb: Logged in as BBB Bot#9262
+2026-05-04 16:02:00,655 [INFO] bbb:   - Books by the Beach (6 members)
+2026-05-04 16:02:00,656 [INFO] bbb: Bot is ready.
+2026-05-04 17:14:25,415 [INFO] discord.gateway: Shard ID None has successfully RESUMED session b86d15b1dc31290182d056b972893bb5.
