@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Books by the Beach — Society for Intellectual Discourse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F1B2D;
+    --navy-deep: #0A1320;
+    --cream: #F5EFE3;
+    --paper: #FAF6EC;
+    --brass: #B08D4A;
+    --brass-soft: #C9A66B;
+    --brass-deep: #8C6D34;
+    --rule: rgba(176, 141, 74, 0.25);
+    --rule-soft: rgba(245, 239, 227, 0.12);
+    --ink: #0F1B2D;
+    --ink-soft: rgba(15, 27, 45, 0.72);
+    --ink-mute: rgba(15, 27, 45, 0.55);
+    --serif: 'Cormorant Garamond', 'Noto Serif KR', Georgia, serif;
+    --sans: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+    --serif-kr: 'Noto Serif KR', serif;
+    --sans-kr: 'Noto Sans KR', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body[data-lang="kr"] { font-family: var(--sans-kr); }
+
+  .en, .kr { display: none; }
+  body[data-lang="en"] .en { display: inline; }
+  body[data-lang="kr"] .kr { display: inline; }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  body[data-lang="kr"] .eyebrow { font-family: var(--sans-kr); letter-spacing: 0.18em; }
+
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 2rem; }
+  section { padding: 6.5rem 0; position: relative; }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250, 246, 236, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--navy);
+    text-decoration: none;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .logo-mark { color: var(--brass); font-style: italic; }
+  .nav-links {
+    display: flex;
+    gap: 1.6rem;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+  }
+  body[data-lang="kr"] .nav-links a { font-family: var(--sans-kr); }
+  .nav-links a:hover { color: var(--brass-deep); }
+  .nav-actions { display: flex; gap: 0.8rem; align-items: center; }
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--rule);
+    border-radius: 50px;
+    padding: 0.2rem;
+  }
+  .lang-toggle button {
+    background: transparent;
+    border: none;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    font-family: var(--sans);
+  }
+  .lang-toggle button.active { background: var(--navy); color: var(--cream); }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    background: var(--navy);
+    padding: 0.65rem 1.2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--navy);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  body[data-lang="kr"] .nav-cta { font-family: var(--sans-kr); text-transform: none; letter-spacing: 0.04em; }
+  .nav-cta:hover { background: var(--brass-deep); border-color: var(--brass-deep); }
+
+  .mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--navy);
+  }
+  .mobile-toggle svg { width: 24px; height: 24px; }
+  @media (max-width: 1024px) {
+    .nav-links { display: none; }
+    .mobile-toggle { display: block; }
+    .nav-links.open {
+      display: flex;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      flex-direction: column;
+      background: var(--paper);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--rule);
+      gap: 1.2rem;
+      align-items: flex-start;
+    }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 92vh;
+    padding: 9rem 0 5rem;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 80% 20%, rgba(176, 141, 74, 0.1), transparent 50%),
+      radial-gradient(ellipse at 20% 80%, rgba(15, 27, 45, 0.04), transparent 50%);
+    pointer-events: none;
+  }
+  .hero .container { position: relative; z-index: 2; width: 100%; }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.2rem;
+    animation: fadeUp 1s 0.1s both;
+  }
+  .hero-meta .line { flex: 0 0 60px; height: 1px; background: var(--brass); }
+
+  h1.hero-title {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 7.5vw, 5.8rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--navy);
+    margin-bottom: 2rem;
+    animation: fadeUp 1s 0.25s both;
+  }
+  body[data-lang="kr"] h1.hero-title {
+    font-family: var(--serif-kr);
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    line-height: 1.18;
+    font-weight: 500;
+  }
+  .hero-title em { font-style: italic; color: var(--brass-deep); font-weight: 400; }
+
+  .hero-divider {
+    width: 100%;
+    max-width: 680px;
+    height: 1px;
+    background: var(--rule);
+    margin: 2.5rem 0;
+    animation: fadeUp 1s 0.4s both;
+  }
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    max-width: 680px;
+    margin-bottom: 1.3rem;
+    line-height: 1.4;
+    font-weight: 300;
+    animation: fadeUp 1s 0.5s both;
+  }
+  body[data-lang="kr"] .hero-sub {
+    font-family: var(--serif-kr);
+    font-size: 1.2rem;
+    font-style: normal;
+    line-height: 1.65;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 540px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 1s 0.65s both;
+  }
+  body[data-lang="kr"] .hero-desc { font-size: 0.95rem; }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 1s 0.8s both;
+  }
+
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--navy);
+    padding: 1.1rem 2.2rem;
+    text-decoration: none;
+    border: 1px solid var(--navy);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+  }
+  body[data-lang="kr"] .btn-primary { font-family: var(--sans-kr); text-transform: none; letter-spacing: 0.05em; }
+  .btn-primary:hover { background: var(--brass-deep); border-color: var(--brass-deep); }
+
+  .btn-secondary {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: transparent;
+    padding: 1.1rem 2.2rem;
+    text-decoration: none;
+    border: 1px solid var(--navy);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+  }
+  body[data-lang="kr"] .btn-secondary { font-family: var(--sans-kr); text-transform: none; letter-spacing: 0.05em; }
+  .btn-secondary:hover { background: var(--navy); color: var(--cream); }
+
+  .hero-mark {
+    position: absolute;
+    right: 4rem;
+    bottom: 4rem;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--rule);
+    font-size: 11rem;
+    line-height: 1;
+    user-select: none;
+    z-index: 1;
+    pointer-events: none;
+    animation: fadeUp 1.5s 1s both;
+  }
+  @media (max-width: 900px) {
+    .hero-mark { font-size: 5rem; right: 1rem; bottom: 2rem; }
+  }
+
+  /* ============ SECTION HEADER ============ */
+  .section-header { margin-bottom: 3.5rem; max-width: 760px; }
+  .section-header .eyebrow { margin-bottom: 1.2rem; display: block; }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2.1rem, 4.8vw, 3.6rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--navy);
+    margin-bottom: 1.2rem;
+  }
+  body[data-lang="kr"] .section-title {
+    font-family: var(--serif-kr);
+    line-height: 1.25;
+    font-weight: 500;
+    font-size: clamp(1.8rem, 4.2vw, 3rem);
+  }
+  .section-title em { font-style: italic; color: var(--brass-deep); }
+
+  /* ============ THE PROBLEM ============ */
+  .problem {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 8rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(176, 141, 74, 0.08), transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(176, 141, 74, 0.05), transparent 50%);
+    pointer-events: none;
+  }
+  .problem .container { position: relative; z-index: 2; }
+  .problem .eyebrow { color: var(--brass-soft); }
+  .problem .section-title { color: var(--cream); }
+  .problem .section-title em { color: var(--brass-soft); }
+
+  .problem-body { max-width: 720px; }
+  .problem-body p {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--cream);
+    margin-bottom: 1.4rem;
+    font-weight: 300;
+  }
+  body[data-lang="kr"] .problem-body p {
+    font-family: var(--serif-kr);
+    font-size: 1.1rem;
+    line-height: 1.85;
+  }
+  .problem-quote {
+    border-left: 1px solid var(--brass);
+    padding-left: 2rem;
+    margin: 3rem 0;
+  }
+  .problem-quote p {
+    font-style: italic;
+    font-size: 1.5rem;
+  }
+  body[data-lang="kr"] .problem-quote p { font-style: normal; font-size: 1.18rem; }
+
+  /* ============ WHAT YOU'LL BUILD ============ */
+  .build { background: var(--paper); padding: 8rem 0; }
+  .build-intro {
+    max-width: 760px;
+    margin-bottom: 3.5rem;
+  }
+  .build-intro p {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    font-weight: 300;
+    font-style: italic;
+  }
+  body[data-lang="kr"] .build-intro p {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 1.12rem;
+    line-height: 1.8;
+  }
+  .build-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 900px) { .build-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .build-grid { grid-template-columns: 1fr; } }
+  .build-card {
+    background: var(--paper);
+    padding: 2.8rem 2.2rem;
+    transition: background 0.4s ease;
+  }
+  .build-card:hover { background: var(--cream); }
+  .build-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--brass);
+    margin-bottom: 1rem;
+  }
+  .build-card h4 {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    color: var(--navy);
+    margin-bottom: 0.8rem;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+  body[data-lang="kr"] .build-card h4 {
+    font-family: var(--serif-kr);
+    font-size: 1.4rem;
+  }
+  .build-card p {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  /* ============ WHAT WE ARE ============ */
+  .what-we-are { background: var(--cream); padding: 8rem 0; }
+  .wwa-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .wwa-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+  .wwa-text p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--ink-soft);
+    margin-bottom: 1.4rem;
+  }
+  body[data-lang="kr"] .wwa-text p { font-size: 0.98rem; line-height: 1.85; }
+
+  .wwa-pillars {
+    border-left: 1px solid var(--rule);
+    padding-left: 2rem;
+  }
+  .wwa-pillar { padding: 1.2rem 0; border-bottom: 1px solid var(--rule); }
+  .wwa-pillar:last-child { border-bottom: none; }
+  .wwa-pillar-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--brass);
+    margin-bottom: 0.3rem;
+  }
+  .wwa-pillar-label {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    color: var(--navy);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+  body[data-lang="kr"] .wwa-pillar-label {
+    font-family: var(--serif-kr);
+    font-size: 1.2rem;
+  }
+  .wwa-pillar-desc {
+    font-size: 0.92rem;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .how { background: var(--paper); padding: 8rem 0; }
+  .how-list {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .how-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    gap: 2.5rem;
+    padding: 2.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .how-row { grid-template-columns: 1fr; gap: 0.8rem; }
+  }
+  .how-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 2.7rem;
+    color: var(--brass);
+    line-height: 1;
+  }
+  .how-content h3 {
+    font-family: var(--serif);
+    font-size: 2rem;
+    color: var(--navy);
+    margin-bottom: 0.7rem;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+  body[data-lang="kr"] .how-content h3 {
+    font-family: var(--serif-kr);
+    font-size: 1.55rem;
+  }
+  .how-content p {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    max-width: 620px;
+  }
+  body[data-lang="kr"] .how-content p { font-size: 0.95rem; }
+  .how-meta {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    text-align: right;
+    padding-top: 0.5rem;
+  }
+  body[data-lang="kr"] .how-meta {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 800px) { .how-meta { text-align: left; } }
+
+  .how-sublist {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .how-sublist span {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--rule);
+    border-radius: 50px;
+  }
+  body[data-lang="kr"] .how-sublist span {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.78rem;
+  }
+
+  /* ============ WHO BELONGS ============ */
+  .who { background: var(--cream); padding: 8rem 0; }
+  .who-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .who-grid { grid-template-columns: 1fr; gap: 3rem; } }
+  .who-block h3 {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    color: var(--navy);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--brass);
+  }
+  body[data-lang="kr"] .who-block h3 {
+    font-family: var(--serif-kr);
+    font-size: 1.4rem;
+  }
+  .who-block.exclude h3 { border-bottom-color: rgba(15, 27, 45, 0.3); color: rgba(15, 27, 45, 0.65); }
+  .who-list { list-style: none; padding: 0; }
+  .who-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  body[data-lang="kr"] .who-list li { font-size: 0.95rem; line-height: 1.7; }
+  .who-list li:last-child { border-bottom: none; }
+  .who-list .mark {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--brass);
+    line-height: 1.5;
+  }
+  .who-block.exclude .who-list .mark { color: rgba(15, 27, 45, 0.4); }
+  .who-block.exclude .who-list li { color: rgba(15, 27, 45, 0.55); }
+
+  /* ============ TIMELINE ============ */
+  .timeline { background: var(--paper); padding: 8rem 0; }
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+  @media (max-width: 800px) { .timeline-grid { grid-template-columns: 1fr; } }
+  .timeline-block {
+    padding: 2.8rem;
+    background: var(--cream);
+    border-top: 3px solid var(--brass);
+  }
+  .timeline-block .marker {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--brass);
+    margin-bottom: 0.5rem;
+  }
+  .timeline-block h3 {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    color: var(--navy);
+    margin-bottom: 1.3rem;
+    line-height: 1.05;
+    font-weight: 500;
+  }
+  body[data-lang="kr"] .timeline-block h3 {
+    font-family: var(--serif-kr);
+    font-size: 1.7rem;
+  }
+  .timeline-block p {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  body[data-lang="kr"] .timeline-block p { font-size: 0.95rem; }
+  .timeline-bottom {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+  .timeline-bottom p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    max-width: 640px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+  body[data-lang="kr"] .timeline-bottom p {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 1.15rem;
+  }
+
+  /* ============ TESTIMONIALS ============ */
+  .testimonials {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 8rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .testimonials::before {
+    content: '"';
+    position: absolute;
+    top: 3rem;
+    right: -2rem;
+    font-family: var(--serif);
+    font-size: 26rem;
+    color: rgba(176, 141, 74, 0.08);
+    line-height: 0.8;
+    font-style: italic;
+    pointer-events: none;
+  }
+  .testimonials .container { position: relative; z-index: 2; }
+  .testimonials .eyebrow { color: var(--brass-soft); }
+  .testimonials .section-title { color: var(--cream); }
+  .test-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  @media (max-width: 800px) { .test-grid { grid-template-columns: 1fr; } }
+  .test-card {
+    padding: 2.2rem;
+    border: 1px solid rgba(245, 239, 227, 0.15);
+    background: rgba(245, 239, 227, 0.03);
+    transition: all 0.4s ease;
+  }
+  .test-card:hover {
+    border-color: var(--brass);
+    background: rgba(176, 141, 74, 0.05);
+  }
+  .test-card.featured { grid-column: span 2; }
+  @media (max-width: 800px) { .test-card.featured { grid-column: span 1; } }
+  .test-quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--cream);
+    margin-bottom: 1.8rem;
+    font-weight: 300;
+  }
+  body[data-lang="kr"] .test-quote {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  .test-attr {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+  body[data-lang="kr"] .test-attr {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.05em;
+  }
+  .test-tag {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--cream);
+    margin-top: 0.4rem;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 300;
+  }
+  body[data-lang="kr"] .test-tag {
+    font-family: var(--serif-kr);
+    font-style: normal;
+  }
+
+  /* ============ FOUNDER ============ */
+  .founder { background: var(--paper); padding: 5rem 0; }
+  .founder-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (max-width: 700px) {
+    .founder-inner { grid-template-columns: 1fr; text-align: center; }
+  }
+  .founder-portrait {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 1px solid var(--brass);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--brass-deep);
+    margin: 0 auto;
+  }
+  .founder-text {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 0.6rem;
+    font-style: italic;
+  }
+  body[data-lang="kr"] .founder-text {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+  .founder-name {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+  }
+  body[data-lang="kr"] .founder-name {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ JOIN ============ */
+  .join {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 8rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .join::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(176, 141, 74, 0.12), transparent 60%);
+  }
+  .join-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .join-inner .eyebrow {
+    color: var(--brass-soft);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .join-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    color: var(--cream);
+    margin-bottom: 1.8rem;
+    line-height: 1.05;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  body[data-lang="kr"] .join-title {
+    font-family: var(--serif-kr);
+    font-size: clamp(1.9rem, 4.8vw, 3.3rem);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .join-title em { font-style: italic; color: var(--brass-soft); }
+  .join-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--cream);
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  body[data-lang="kr"] .join-subtitle {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 1.08rem;
+    line-height: 1.75;
+  }
+  .join-details {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule-soft);
+    margin: 2.5rem 0;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  @media (max-width: 700px) { .join-details { grid-template-columns: repeat(2, 1fr); } }
+  .join-detail {
+    background: var(--navy);
+    padding: 1.6rem 1rem;
+  }
+  .join-detail-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--brass-soft);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    font-weight: 400;
+  }
+  .join-detail-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.8;
+  }
+  body[data-lang="kr"] .join-detail-label {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.82rem;
+  }
+  .join .btn-primary {
+    background: var(--brass-deep);
+    border-color: var(--brass-deep);
+    padding: 1.2rem 2.8rem;
+    font-size: 0.85rem;
+  }
+  .join .btn-primary:hover {
+    background: var(--cream);
+    color: var(--navy);
+    border-color: var(--cream);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--navy-deep);
+    color: var(--cream);
+    padding: 3.5rem 0 2rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr; gap: 2rem; } }
+  .footer-brand .logo { color: var(--cream); margin-bottom: 1rem; display: inline-block; }
+  .footer-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    color: rgba(245, 239, 227, 0.6);
+    font-size: 0.95rem;
+    max-width: 320px;
+  }
+  body[data-lang="kr"] .footer-tagline {
+    font-family: var(--serif-kr);
+    font-style: normal;
+    font-size: 0.9rem;
+  }
+  .footer-col h5 {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    margin-bottom: 1rem;
+  }
+  body[data-lang="kr"] .footer-col h5 {
+    font-family: var(--sans-kr);
+    text-transform: none;
+    letter-spacing: 0.05em;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.5rem; }
+  .footer-col a {
+    color: rgba(245, 239, 227, 0.7);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.3s ease;
+  }
+  .footer-col a:hover { color: var(--brass-soft); }
+  .footer-bottom {
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule-soft);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: rgba(245, 239, 227, 0.4);
+  }
+  body[data-lang="kr"] .footer-bottom { font-family: var(--sans-kr); }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body data-lang="en">
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">Books <span class="logo-mark">by the</span> Beach</a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#problem" onclick="closeMenu()"><span class="en">Problem</span><span class="kr">문제</span></a></li>
+      <li><a href="#build" onclick="closeMenu()"><span class="en">What You'll Build</span><span class="kr">얻게 되는 것</span></a></li>
+      <li><a href="#about" onclick="closeMenu()"><span class="en">About</span><span class="kr">소개</span></a></li>
+      <li><a href="#how" onclick="closeMenu()"><span class="en">How It Works</span><span class="kr">방법</span></a></li>
+      <li><a href="#members" onclick="closeMenu()"><span class="en">Members</span><span class="kr">멤버</span></a></li>
+      <li><a href="#stories" onclick="closeMenu()"><span class="en">Stories</span><span class="kr">이야기</span></a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="lang-toggle">
+        <button class="active" onclick="setLang('en', this)">EN</button>
+        <button onclick="setLang('kr', this)">KR</button>
+      </div>
+      <a href="#join" class="nav-cta"><span class="en">Apply</span><span class="kr">신청</span></a>
+      <button class="mobile-toggle" onclick="toggleMenu()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <line x1="3" y1="7" x2="21" y2="7"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="17" x2="21" y2="17"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">
+      <div class="line"></div>
+      <span class="eyebrow"><span class="en">Society for Intellectual Discourse</span><span class="kr">지적 담론을 위한 모임</span></span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="en">Think deeper.<br>Speak sharper.<br>Build <em>real confidence.</em></span>
+      <span class="kr">더 깊이 사고하고,<br>더 날카롭게 말하고,<br><em>진짜 자신감을</em> 쌓아갑니다.</span>
+    </h1>
+
+    <div class="hero-divider"></div>
+
+    <p class="hero-sub">
+      <span class="en">A society for ambitious, globally-minded people who refuse to let their thinking stay shallow.</span>
+      <span class="kr">야망 있고 글로벌한 시선을 가진 사람들 — 사고가 얕은 채로 머무르길 거부하는 이들을 위한 모임.</span>
+    </p>
+
+    <p class="hero-desc">
+      <span class="en">We meet weekly. We read seriously. We speak in English. Over months of consistent practice, something shifts — in how you think, how you speak, and the quiet confidence you carry into any conversation.</span>
+      <span class="kr">우리는 매주 만납니다. 진지하게 읽고, 영어로 대화합니다. 몇 달간 함께하다 보면 무언가가 달라집니다 — 사고하는 방식, 말하는 방식, 그리고 어떤 대화 속에서도 흔들리지 않는 조용한 자신감이.</span>
+    </p>
+
+    <div class="hero-actions">
+      <a href="#join" class="btn-primary">
+        <span class="en">Apply for Membership</span><span class="kr">멤버십 신청하기</span>
+      </a>
+      <a href="#how" class="btn-secondary">
+        <span class="en">How It Works</span><span class="kr">방법 알아보기</span>
+      </a>
+    </div>
+  </div>
+  <div class="hero-mark">B<em>b</em>B</div>
+</section>
+
+<!-- ===== THE PROBLEM ===== -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">The Problem</span><span class="kr">우리가 마주한 현실</span></span>
+      <h2 class="section-title">
+        <span class="en">Smart, driven, and<br>still <em>unsure.</em></span>
+        <span class="kr">똑똑하고 야망 있지만,<br>여전히 <em>확신이 없다.</em></span>
+      </h2>
+    </div>
+
+    <div class="problem-body reveal">
+      <p>
+        <span class="en">You're capable. You've worked hard. On paper, you're doing fine. But the world is moving faster than anyone prepared us for, and quietly — privately — you wonder if you're keeping up.</span>
+        <span class="kr">당신은 충분히 능력 있는 사람입니다. 열심히 살아왔고, 이력서로 보면 부족함이 없습니다. 하지만 세상은 누구도 준비시켜주지 않은 속도로 움직이고 있고, 조용히 — 혼자서 — 자신이 잘 따라가고 있는지 의심하게 됩니다.</span>
+      </p>
+
+      <p>
+        <span class="en">AI gives you endless information, but no clearer judgment. Another degree promises credentials, but not confidence. Networking events offer surface introductions, but rarely the real connection that changes a life or a career.</span>
+        <span class="kr">AI는 끝없는 정보를 줍니다. 하지만 더 명료한 판단을 주지는 않습니다. 또 다른 학위는 자격증을 약속하지만, 자신감을 주지는 않습니다. 네트워킹 이벤트는 피상적인 만남을 제공할 뿐, 삶이나 커리어를 바꾸는 진짜 관계는 만들어 주지 않습니다.</span>
+      </p>
+
+      <div class="problem-quote">
+        <p>
+          <span class="en">What you actually need — what nobody is offering — is a room of equally driven, intelligent people who challenge how you think, sharpen how you speak, and remind you that you are not alone in figuring this out.</span>
+          <span class="kr">당신에게 진짜 필요한 것 — 그러나 누구도 제공하지 않는 것 — 은 당신과 같은 수준으로 사고하고 야망을 가진 사람들의 자리입니다. 사고를 도전하고, 말하는 방식을 다듬어 주고, 이 모든 것을 당신 혼자 풀어내고 있지 않다는 사실을 일깨워 주는 자리.</span>
+        </p>
+      </div>
+
+      <p>
+        <span class="en">The future doesn't belong to those who consume the most information. It belongs to those who can think clearly, speak with conviction, and build real human trust — because every job, every opportunity, every collaboration still happens between people.</span>
+        <span class="kr">미래는 가장 많은 정보를 소비하는 사람의 것이 아닙니다. 명료하게 사고하고, 확신을 가지고 말하며, 사람과 사람 사이의 진짜 신뢰를 쌓아내는 사람의 것입니다 — 모든 일자리, 모든 기회, 모든 협업은 결국 사람과 사람 사이에서 일어나기 때문입니다.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT YOU'LL BUILD HERE ===== -->
+<section class="build" id="build">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">What You'll Build Here</span><span class="kr">여기서 얻게 되는 것</span></span>
+      <h2 class="section-title">
+        <span class="en">Four practices.<br>Built over <em>months,</em> not minutes.</span>
+        <span class="kr">네 가지 실천,<br><em>몇 분이 아닌 몇 달에 걸쳐</em> 만들어지는 것.</span>
+      </h2>
+    </div>
+
+    <div class="build-intro reveal">
+      <p>
+        <span class="en">No new degree. No expensive program. Just the right room, the right books, and the right people — over time.</span>
+        <span class="kr">새로운 학위도, 값비싼 프로그램도 필요 없습니다. 적절한 자리, 적절한 책들, 그리고 적절한 사람들 — 시간을 두고 함께할 뿐.</span>
+      </p>
+    </div>
+
+    <div class="build-grid reveal">
+      <div class="build-card">
+        <div class="build-num">i.</div>
+        <h4><span class="en">Clarity</span><span class="kr">명료함</span></h4>
+        <p><span class="en">Cut through noise. Form your own positions. Trust your judgment in a world designed to keep you uncertain.</span><span class="kr">소음을 걸러내는 법. 자신의 입장을 세우는 법. 끊임없이 흔들리도록 설계된 세상 속에서 자신의 판단을 믿는 법.</span></p>
+      </div>
+
+      <div class="build-card">
+        <div class="build-num">ii.</div>
+        <h4><span class="en">Confidence</span><span class="kr">자신감</span></h4>
+        <p><span class="en">Speak in front of people, regularly, on challenging topics — until hesitation gives way to a voice that's actually yours.</span><span class="kr">사람들 앞에서 어려운 주제를 다루며 꾸준히 말하다 보면 — 망설임은 사라지고, 진짜 당신의 목소리가 자리를 잡습니다.</span></p>
+      </div>
+
+      <div class="build-card">
+        <div class="build-num">iii.</div>
+        <h4><span class="en">Craft</span><span class="kr">기예</span></h4>
+        <p><span class="en">Compress big ideas into clear language. Tell your own story in a way that makes people lean in. Storytelling as a real skill — not a hashtag.</span><span class="kr">큰 아이디어를 명확한 언어로 압축하는 법. 사람들이 귀 기울이게 만드는 방식으로 자신의 이야기를 풀어내는 법. 해시태그가 아닌, 실제 기술로서의 스토리텔링.</span></p>
+      </div>
+
+      <div class="build-card">
+        <div class="build-num">iv.</div>
+        <h4><span class="en">Connection</span><span class="kr">진짜 관계</span></h4>
+        <p><span class="en">The kind of friendships that get built when you skip the small talk. Globally-minded peers who know you beyond your résumé.</span><span class="kr">피상적인 대화를 건너뛰었을 때 비로소 만들어지는 관계들. 당신을 이력서 너머로 알아주는 글로벌한 시선의 동료들.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT WE ARE ===== -->
+<section class="what-we-are" id="about">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">What We Are</span><span class="kr">우리는 어떤 곳인가</span></span>
+      <h2 class="section-title">
+        <span class="en">This is not a <em>book club.</em></span>
+        <span class="kr">이곳은 <em>독서 모임이 아닙니다.</em></span>
+      </h2>
+    </div>
+
+    <div class="wwa-grid">
+      <div class="wwa-text reveal">
+        <p>
+          <span class="en">Books by the Beach is a society for intellectual discourse. We use books as tools — not as the identity of the room. The real work happens in the conversations: the questions, the debates, the moments when you compress a complex thought into something that actually lands.</span>
+          <span class="kr">Books by the Beach는 지적 담론을 위한 모임입니다. 우리는 책을 도구로 사용합니다 — 모임의 정체성이 아니라. 진짜 작업은 대화 속에서 일어납니다. 질문, 토론, 그리고 복잡한 생각을 분명하게 전달되는 한 마디로 압축해내는 그 순간들.</span>
+        </p>
+
+        <p>
+          <span class="en">We are modeled after the great salons of the 17th and 18th century — gatherings where the sharpest minds of an era met not just to read, but to think together. To challenge, refine, and sharpen one another.</span>
+          <span class="kr">우리는 17–18세기 유럽의 살롱을 모델로 합니다 — 한 시대의 가장 명민한 사람들이 함께 모여, 단순히 읽기 위해서가 아니라 함께 사고하기 위해 모였던 그 자리들. 서로를 도전하고, 다듬고, 날카롭게 만들기 위해.</span>
+        </p>
+
+        <p>
+          <span class="en">Think of it as your ongoing education — without the tuition, without the lecture hall, without the gatekeeping. Every session, you show up with a perspective, engage honestly, and leave sharper than you arrived.</span>
+          <span class="kr">이것은 당신의 평생 교육입니다 — 학비 없이, 강의실 없이, 진입 장벽 없이. 매번의 모임마다 당신은 자신의 관점을 가지고 와서, 정직하게 참여하고, 들어올 때보다 더 날카로운 사고를 가진 채 떠나게 됩니다.</span>
+        </p>
+      </div>
+
+      <div class="wwa-pillars reveal">
+        <div class="wwa-pillar">
+          <div class="wwa-pillar-num">i.</div>
+          <div class="wwa-pillar-label"><span class="en">A Society — Not a Course</span><span class="kr">강의가 아닌 모임</span></div>
+          <div class="wwa-pillar-desc"><span class="en">Membership-based. Application-required. Built for people who take their growth seriously.</span><span class="kr">멤버십 기반. 신청제. 자신의 성장을 진지하게 여기는 사람들을 위한 곳.</span></div>
+        </div>
+        <div class="wwa-pillar">
+          <div class="wwa-pillar-num">ii.</div>
+          <div class="wwa-pillar-label"><span class="en">In English. By Design.</span><span class="kr">영어로. 의도적으로.</span></div>
+          <div class="wwa-pillar-desc"><span class="en">Every session is conducted entirely in English. We're not here to teach the language. We're here to use it for something that actually matters.</span><span class="kr">모든 세션은 전적으로 영어로 진행됩니다. 영어를 가르치는 자리가 아닙니다. 영어를 진짜 중요한 것에 쓰는 자리입니다.</span></div>
+        </div>
+        <div class="wwa-pillar">
+          <div class="wwa-pillar-num">iii.</div>
+          <div class="wwa-pillar-label"><span class="en">Practice. Not Performance.</span><span class="kr">수행이 아닌 연습</span></div>
+          <div class="wwa-pillar-desc"><span class="en">Showing up matters more than impressing anyone. The room is built on honesty — not polish.</span><span class="kr">잘 보이는 것보다 꾸준히 나오는 것이 중요합니다. 매끄러움이 아닌 정직함 위에 세워진 자리.</span></div>
+        </div>
+        <div class="wwa-pillar">
+          <div class="wwa-pillar-num">iv.</div>
+          <div class="wwa-pillar-label"><span class="en">Members, Not Customers</span><span class="kr">고객이 아닌 멤버</span></div>
+          <div class="wwa-pillar-desc"><span class="en">What we build between us — the conversations, the trust, the friendships — is the actual work.</span><span class="kr">우리 사이에 쌓이는 것 — 대화, 신뢰, 우정 — 그 자체가 이 모임의 본질입니다.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS — 4 PROGRAMS ===== -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">How It Works</span><span class="kr">참여 방법</span></span>
+      <h2 class="section-title">
+        <span class="en">Four programs.<br>One <em>practice.</em></span>
+        <span class="kr">네 가지 프로그램,<br>하나의 <em>실천.</em></span>
+      </h2>
+    </div>
+
+    <div class="how-list reveal">
+
+      <div class="how-row">
+        <div class="how-num">01</div>
+        <div class="how-content">
+          <h3><span class="en">BYOB — Bring Your Own Book</span><span class="kr">BYOB — 자신의 책을 가져오는 시간</span></h3>
+          <p>
+            <span class="en">Our weekly reading nights — online via Discord and offline in Seoul. You bring whatever book you're currently reading. No assigned text. No syllabus. Just a room of readers — expats, returnees, globally-minded Koreans — sharing the ideas that are moving them right now.</span>
+            <span class="kr">매주 진행되는 독서 모임 — Discord 온라인과 서울 오프라인에서 동시에. 지금 읽고 있는 어떤 책이든 가져와 함께합니다. 정해진 책도, 정해진 커리큘럼도 없습니다. 외국인 직장인, 해외에서 돌아온 한국인, 글로벌한 시선을 가진 한국인들이 한자리에 모여, 지금 자신을 움직이고 있는 생각을 나눕니다.</span>
+          </p>
+        </div>
+        <div class="how-meta"><span class="en">Weekly · Online + Seoul</span><span class="kr">매주 · 온라인 + 서울</span></div>
+      </div>
+
+      <div class="how-row">
+        <div class="how-num">02</div>
+        <div class="how-content">
+          <h3><span class="en">Book Workshop for Deep Discourse</span><span class="kr">북 워크숍 — 심화 담론</span></h3>
+          <p>
+            <span class="en">One book, chosen carefully. Everyone reads it together. Then we go deep. This isn't a summary session. The conversation is designed around the questions most people never get asked — about work, identity, direction, and the kind of life you actually want to build.</span>
+            <span class="kr">한 권의 책. 신중히 선정된 단 한 권. 모두가 함께 읽고, 그 다음에는 깊이 들어갑니다. 요약을 나누는 자리가 아닙니다. 일, 정체성, 방향, 그리고 진짜로 살고 싶은 삶에 대한 — 평소 누구도 묻지 않는 질문들을 중심으로 대화가 설계됩니다.</span>
+          </p>
+        </div>
+        <div class="how-meta"><span class="en">Monthly · Curated Deep Dive</span><span class="kr">월간 · 큐레이션 심화</span></div>
+      </div>
+
+      <div class="how-row">
+        <div class="how-num">03</div>
+        <div class="how-content">
+          <h3><span class="en">Real Talk</span><span class="kr">Real Talk</span></h3>
+          <p>
+            <span class="en">Each session, we set a theme — anxiety, ambition, money, family, rest. Topics most people avoid. We don't debate them. We examine the relationship we've each built with them, and the strategies others have quietly developed to live with them more wisely. The goal isn't to solve. It's to build a healthier consciousness.</span>
+            <span class="kr">매 세션마다 하나의 주제를 정합니다 — 불안, 야망, 돈, 가족, 휴식. 대부분의 사람들이 피하는 주제들. 우리는 그것을 두고 토론하지 않습니다. 각자가 그 주제와 어떤 관계를 맺고 살아왔는지, 그리고 다른 사람들이 그것과 더 지혜롭게 함께하기 위해 조용히 만들어온 전략들을 함께 들여다봅니다. 답을 내기 위해서가 아니라 — 더 건강한 자기 인식을 쌓아 올리기 위해.</span>
+          </p>
+        </div>
+        <div class="how-meta"><span class="en">Monthly · Theme-Based</span><span class="kr">월간 · 주제 기반</span></div>
+      </div>
+
+      <div class="how-row">
+        <div class="how-num">04</div>
+        <div class="how-content">
+          <h3><span class="en">Offline Community Meetups</span><span class="kr">오프라인 커뮤니티 모임</span></h3>
+          <p>
+            <span class="en">The community comes to life off-screen — through rotating gatherings designed to deepen friendships, sharpen presence in front of a real room, and create the kind of slow, unhurried thinking that everyday life rarely allows.</span>
+            <span class="kr">화면 너머의 자리에서 커뮤니티가 살아납니다 — 우정을 깊게 하고, 진짜 자리에서의 존재감을 다듬어 주며, 일상에서는 좀처럼 허락되지 않는 느린 사고의 시간을 만들어주는 정기 모임들.</span>
+          </p>
+          <div class="how-sublist">
+            <span><span class="en">PPT Nights</span><span class="kr">PPT 발표의 밤</span></span>
+            <span><span class="en">Reading & Discourse Retreats</span><span class="kr">리딩 & 디스코스 리트릿</span></span>
+            <span><span class="en">Casual Networking Meetups</span><span class="kr">캐주얼 네트워킹</span></span>
+          </div>
+        </div>
+        <div class="how-meta"><span class="en">Rotating</span><span class="kr">정기 운영</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHO BELONGS ===== -->
+<section class="who" id="members">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">Who Belongs Here</span><span class="kr">이 자리에 어울리는 사람</span></span>
+      <h2 class="section-title">
+        <span class="en">An <em>honest</em> filter.</span>
+        <span class="kr"><em>솔직한</em> 안내.</span>
+      </h2>
+    </div>
+
+    <div class="who-grid reveal">
+      <div class="who-block">
+        <h3><span class="en">You belong here if…</span><span class="kr">이곳이 맞는 사람이라면</span></h3>
+        <ul class="who-list">
+          <li><span class="mark">—</span><span><span class="en">You speak English fluently and want to use it for something meaningful, not study it</span><span class="kr">영어를 유창하게 구사하며, 공부하는 대상이 아닌 진짜 의미 있는 것에 쓰고 싶은 사람</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You're an expat, returning Korean, or international professional starving for real intellectual conversation</span><span class="kr">외국인 직장인, 해외에서 돌아온 한국인, 글로벌한 전문가로서 진짜 지적 대화에 굶주려 있는 사람</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You want to think more clearly, speak more confidently, and tell your own story better</span><span class="kr">더 명료하게 사고하고, 더 자신 있게 말하고, 자신의 이야기를 더 잘 풀어내고 싶은 사람</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You believe deep friendships are still possible in adulthood — and you've been quietly looking for them</span><span class="kr">성인이 된 후에도 깊은 우정이 여전히 가능하다고 믿고 — 그것을 조용히 찾고 있던 사람</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You're committed to showing up, doing the work, and bringing a perspective worth defending</span><span class="kr">꾸준히 나오고, 진짜 노력을 들이고, 자신의 관점을 들고 와 지켜낼 마음이 있는 사람</span></span></li>
+        </ul>
+      </div>
+
+      <div class="who-block exclude">
+        <h3><span class="en">This is not for you if…</span><span class="kr">이곳이 맞지 않는 사람이라면</span></h3>
+        <ul class="who-list">
+          <li><span class="mark">—</span><span><span class="en">You want a traditional book club where everyone reads the same book</span><span class="kr">모두가 같은 책을 읽는 일반적인 독서 모임을 원한다면</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You're looking for an English class to fix your grammar or carry your conversation</span><span class="kr">문법을 고쳐주거나 대화를 대신 이끌어주는 영어 수업을 찾고 있다면</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You prefer casual social meetups where conversation stays light</span><span class="kr">대화가 가볍게 머무는 친목 모임을 더 선호한다면</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You want to network transactionally — exchanging cards, looking for quick favors</span><span class="kr">명함을 교환하고 가벼운 도움을 주고받는 식의 거래적 네트워킹을 기대한다면</span></span></li>
+          <li><span class="mark">—</span><span><span class="en">You're not ready to form your own perspective and defend it in front of others</span><span class="kr">자신의 관점을 세우고 사람들 앞에서 그것을 지켜낼 준비가 아직 안 되어 있다면</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section class="timeline" id="outcomes">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">What Changes</span><span class="kr">달라지는 것</span></span>
+      <h2 class="section-title">
+        <span class="en">Real change happens<br>on a <em>real timeline.</em></span>
+        <span class="kr">진짜 변화는<br><em>진짜 시간 위에서</em> 일어납니다.</span>
+      </h2>
+    </div>
+
+    <div class="timeline-grid reveal">
+      <div class="timeline-block">
+        <div class="marker"><span class="en">At four to five months.</span><span class="kr">4–5개월이 지난 시점</span></div>
+        <h3><span class="en">Something starts to shift.</span><span class="kr">무언가가 달라지기 시작합니다.</span></h3>
+        <p><span class="en">You'll have built a real reading habit — replacing the mindless scroll with something that restores you. You'll be surprised by how energizing it is to be in a room where people are genuinely curious about what you think. And you'll start noticing it at work — in how you tell a story, hold a meeting, walk into a room.</span><span class="kr">진짜 독서 습관이 생깁니다 — 무의미한 스크롤이 자신을 회복시켜주는 시간으로 대체됩니다. 사람들이 당신의 생각에 진심으로 호기심을 가지는 자리가 얼마나 큰 에너지가 되는지 놀라게 됩니다. 그리고 직장에서도 느끼기 시작합니다 — 이야기를 풀어가는 방식, 회의를 이끄는 방식, 어떤 자리에 들어설 때의 자신의 모습이 달라지고 있다는 것을.</span></p>
+      </div>
+
+      <div class="timeline-block">
+        <div class="marker"><span class="en">At one year.</span><span class="kr">1년이 지난 시점</span></div>
+        <h3><span class="en">You will not recognize yourself.</span><span class="kr">자신이 다른 사람처럼 느껴집니다.</span></h3>
+        <p><span class="en">You'll handle challenging topics in any setting — professional, social, personal — with a calm clarity that surprises even you. You'll compress complex ideas into clean, powerful language and deliver them without hesitation. You'll have built durable, real friendships. And you may find that opportunities you never went looking for have started showing up.</span><span class="kr">어떤 자리에서든 — 직장, 사적인 자리, 개인적인 순간 — 어려운 주제를 다루는 자신에게 스스로도 놀라게 됩니다. 차분하고 명료하게. 복잡한 생각을 깔끔하고 단단한 언어로 압축해서, 망설임 없이 전합니다. 단단한 진짜 우정이 쌓여 있고, 한 번도 찾으려 한 적 없던 기회들이 자연스럽게 다가오기 시작합니다.</span></p>
+      </div>
+    </div>
+
+    <div class="timeline-bottom reveal">
+      <p><span class="en">No new degree. No expensive program. Just the right room, the right books, and the right people — over time.</span><span class="kr">새로운 학위도, 값비싼 프로그램도 필요 없습니다. 적절한 자리, 적절한 책들, 그리고 적절한 사람들 — 시간을 두고 함께할 뿐.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS — ALL 5 RESTORED ===== -->
+<section class="testimonials" id="stories">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow"><span class="en">Voices From The Society</span><span class="kr">멤버들의 목소리</span></span>
+      <h2 class="section-title">
+        <span class="en">What members<br>actually <em>say.</em></span>
+        <span class="kr">실제 멤버들이<br><em>전하는 이야기.</em></span>
+      </h2>
+    </div>
+
+    <div class="test-grid reveal">
+
+      <div class="test-card">
+        <p class="test-quote"><span class="en">I came feeling capable on paper but lost inside. The world kept moving and I kept second-guessing every step. What I didn't expect was that the relationships I built here — through months of real conversation — would change my career trajectory. I wasn't handed an opportunity. I earned someone's trust over time.</span><span class="kr">이력서로는 충분해 보였지만, 안에서는 길을 잃은 채로 이 모임에 왔습니다. 세상은 빠르게 움직이는데 저는 매번 자신의 결정을 의심하고 있었습니다. 예상하지 못한 건 — 몇 달 동안의 진짜 대화를 통해 쌓아 올린 관계가 결국 제 커리어의 방향을 바꿔놓았다는 사실이었습니다. 누군가가 기회를 건네준 것이 아니라, 시간을 들여 신뢰를 얻은 결과였습니다.</span></p>
+        <div class="test-attr">
+          <div><span class="en">Member, Seoul</span><span class="kr">멤버 · 서울</span></div>
+          <div class="test-tag"><span class="en">Found a new career direction through earned trust.</span><span class="kr">쌓아 올린 신뢰가 새로운 커리어로 이어지다.</span></div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <p class="test-quote"><span class="en">I traveled the world for work and always felt like the least confident voice in the room. My English wasn't the problem. My belief in myself was. Eight months of showing up changed that. On a business trip in my fourth month, I stood up to present and something was completely different. I wasn't performing. I was just speaking. Like myself.</span><span class="kr">업무로 세계를 다녔지만, 늘 회의실에서 가장 자신 없는 목소리였습니다. 영어가 문제가 아니었습니다. 저 자신에 대한 믿음이 문제였습니다. 매주 빠짐없이 나온 8개월이 그것을 바꿨습니다. 4개월차에 나간 출장에서 발표를 위해 일어섰을 때, 무언가가 완전히 달라져 있었습니다. 무언가를 연기하고 있는 것이 아니라, 그냥 말하고 있었습니다 — 저 자신으로서.</span></p>
+        <div class="test-attr">
+          <div><span class="en">Member, Seoul</span><span class="kr">멤버 · 서울</span></div>
+          <div class="test-tag"><span class="en">Eight months. One book per month. One trip that changed everything.</span><span class="kr">8개월, 매달 한 권의 책, 그리고 모든 것을 바꾼 한 번의 출장.</span></div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <p class="test-quote"><span class="en">I was dispatched to Korea — ambitious, professionally successful, but completely out of place. There was no one around me to have the kind of conversation that makes you feel alive. I felt stagnant. BBB gave me my life back. I started reading again. Forming real questions. Every conversation thought-provoking, genuinely fun. I found something I didn't even know I was missing.</span><span class="kr">업무로 한국에 파견되어 왔습니다 — 야망도, 직업적 성공도 있었지만, 완전히 어울리지 않는 곳에 있는 듯한 기분이었습니다. 살아 있다고 느끼게 해 주는 그런 대화를 나눌 사람이 주변에 없었습니다. 정체된 느낌. BBB는 제 삶을 돌려줬습니다. 다시 책을 읽기 시작했고, 진짜 질문들을 만들기 시작했고, 모든 대화가 생각을 깨우고 진심으로 즐거운 자리가 되었습니다. 잃어버렸는지조차 몰랐던 것을 다시 찾았습니다.</span></p>
+        <div class="test-attr">
+          <div><span class="en">Member, Seoul</span><span class="kr">멤버 · 서울</span></div>
+          <div class="test-tag"><span class="en">Dispatched to Korea. Found her missing piece.</span><span class="kr">한국 파견 후 잃어버렸던 자신을 다시 찾다.</span></div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <p class="test-quote"><span class="en">I run a large business and had been searching for someone I could genuinely trust — someone fluent in both English and Korean, globally minded, with the depth and reliability I needed to help take the business international. I came to BBB for the conversations. I stayed because of the people. And I found exactly who I was looking for — not through a recruiter or a LinkedIn search, but through months of real conversation that showed me exactly who people are beneath their titles.</span><span class="kr">제법 큰 사업을 운영하며, 진심으로 신뢰할 수 있는 사람을 찾고 있었습니다 — 영어와 한국어 모두에 능통하고, 글로벌한 시선을 가진, 사업을 해외로 확장할 수 있는 깊이와 신뢰성을 가진 사람. 처음에는 대화 때문에 BBB에 왔습니다. 머무르게 된 건 사람들 때문이었습니다. 그리고 정확히 찾고 있던 사람을 만났습니다 — 헤드헌터나 LinkedIn 검색을 통해서가 아니라, 직함 너머의 진짜 모습을 보여준 몇 달간의 대화를 통해서.</span></p>
+        <div class="test-attr">
+          <div><span class="en">Member, Seoul</span><span class="kr">멤버 · 서울</span></div>
+          <div class="test-tag"><span class="en">Came for the conversations. Found his next key business partner.</span><span class="kr">대화를 위해 왔다가, 핵심 비즈니스 파트너를 만나다.</span></div>
+        </div>
+      </div>
+
+      <div class="test-card featured">
+        <p class="test-quote"><span class="en">I had done everything right. Every degree. Every goal. Every milestone. And yet something felt hollow. I wasn't growing anymore — not in the way that actually matters. I had lost my curiosity. My creativity. Even my joy in building real friendships. I found BBB almost by accident. Within weeks I felt it — that spark I hadn't felt in years. The excitement of a great book. The thrill of a conversation that genuinely surprises you. The warmth of friendships built not on history or convenience, but on a shared hunger to become better. I realized I had never believed you could build deep friendships in adulthood. BBB proved me wrong. I'm no longer anxious about where I'm headed. I feel curious again. And that changed everything.</span><span class="kr">모든 것을 제대로 해냈다고 생각했습니다. 모든 학위, 모든 목표, 모든 단계를. 그런데도 어딘가가 비어 있었습니다. 더 이상 성장하지 않았습니다 — 정말 중요한 방식으로는. 호기심을 잃었고, 창의성을 잃었고, 진짜 우정을 만드는 기쁨조차 잃은 채였습니다. 우연히 BBB를 발견했습니다. 몇 주 만에, 오랫동안 잃어버린 줄 알았던 그 불꽃을 다시 느꼈습니다. 좋은 책에서 오는 떨림, 진짜 대화에서 오는 놀람, 역사나 편의가 아니라 더 나은 사람이 되고자 하는 공통된 열망 위에 쌓이는 우정의 따뜻함. 성인이 된 후에는 깊은 우정이 가능하다고 한 번도 믿지 않았습니다. BBB가 그것을 틀렸다고 증명해 주었습니다. 더 이상 자신의 방향에 대해 불안해하지 않습니다. 다시 호기심을 느끼고 있고, 그 사실 하나가 모든 것을 바꿨습니다.</span></p>
+        <div class="test-attr">
+          <div><span class="en">Member, Seoul</span><span class="kr">멤버 · 서울</span></div>
+          <div class="test-tag"><span class="en">Had every degree. Was missing everything else. Found it here.</span><span class="kr">모든 학위를 가졌지만, 정말 중요한 것을 잃고 있었던 사람.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOUNDER ===== -->
+<section class="founder">
+  <div class="container">
+    <div class="founder-inner reveal">
+      <div class="founder-portrait">B</div>
+      <div>
+        <p class="founder-text">
+          <span class="en">"I built Books by the Beach because I needed it to exist. I had spent years abroad — studying, working, living in English — and when I came back, I found that the conversation I missed most wasn't available anywhere. So I built the room I was looking for. And it turned out a lot of other people had been looking for it too."</span>
+          <span class="kr">"Books by the Beach는 제게 필요했기 때문에 만들었습니다. 해외에서 공부하고, 일하고, 영어로 살아온 시간이 길었습니다. 한국으로 돌아왔을 때, 가장 그리웠던 종류의 대화를 어디에서도 만날 수 없었습니다. 그래서 제가 찾고 있던 그 자리를 직접 만들기로 했습니다. 그리고 알게 되었습니다 — 같은 자리를 찾고 있던 사람들이 생각보다 많았다는 것을."</span>
+        </p>
+        <div class="founder-name"><span class="en">The Founder · Books by the Beach</span><span class="kr">설립자 · Books by the Beach</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== JOIN ===== -->
+<section class="join" id="join">
+  <div class="container">
+    <div class="join-inner reveal">
+      <span class="eyebrow"><span class="en">Join the Society</span><span class="kr">모임에 합류하기</span></span>
+      <h2 class="join-title">
+        <span class="en">The room is <em>waiting.</em></span>
+        <span class="kr">자리는 <em>준비되어 있습니다.</em></span>
+      </h2>
+      <p class="join-subtitle">
+        <span class="en">If you've read this far and felt seen — this is your place. We meet every week. We think in English. We welcome the genuinely curious.</span>
+        <span class="kr">여기까지 읽으며 어딘가에서 자신이 보였다면 — 이곳이 당신의 자리입니다. 우리는 매주 만나고, 영어로 사고하며, 진심으로 호기심을 가진 사람들을 환영합니다.</span>
+      </p>
+
+      <div class="join-details">
+        <div class="join-detail">
+          <div class="join-detail-num">4</div>
+          <div class="join-detail-label"><span class="en">Month commitment</span><span class="kr">개월 약속</span></div>
+        </div>
+        <div class="join-detail">
+          <div class="join-detail-num">1×</div>
+          <div class="join-detail-label"><span class="en">Weekly Discord meetup</span><span class="kr">주간 Discord 모임</span></div>
+        </div>
+        <div class="join-detail">
+          <div class="join-detail-num">1–2×</div>
+          <div class="join-detail-label"><span class="en">Monthly Seoul offline</span><span class="kr">월간 서울 오프라인</span></div>
+        </div>
+        <div class="join-detail">
+          <div class="join-detail-num">By</div>
+          <div class="join-detail-label"><span class="en">Application only</span><span class="kr">신청제 입회</span></div>
+        </div>
+      </div>
+
+      <a href="#" class="btn-primary">
+        <span class="en">Apply for Membership</span><span class="kr">멤버십 신청하기</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">Books <span class="logo-mark">by the</span> Beach</a>
+        <p class="footer-tagline">
+          <span class="en">A society for intellectual discourse. Built for the minds that refuse to stay shallow.</span>
+          <span class="kr">지적 담론을 위한 모임. 사고가 얕은 채로 머무르길 거부하는 이들을 위한 자리.</span>
+        </p>
+      </div>
+      <div class="footer-col">
+        <h5><span class="en">Explore</span><span class="kr">살펴보기</span></h5>
+        <ul>
+          <li><a href="#about"><span class="en">About</span><span class="kr">소개</span></a></li>
+          <li><a href="#how"><span class="en">How It Works</span><span class="kr">방법</span></a></li>
+          <li><a href="#members"><span class="en">Members</span><span class="kr">멤버</span></a></li>
+          <li><a href="#stories"><span class="en">Stories</span><span class="kr">이야기</span></a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5><span class="en">Connect</span><span class="kr">연결하기</span></h5>
+        <ul>
+          <li><a href="#join"><span class="en">Apply</span><span class="kr">신청</span></a></li>
+          <li><a href="#"><span class="en">Instagram</span><span class="kr">인스타그램</span></a></li>
+          <li><a href="#"><span class="en">Discord</span><span class="kr">디스코드</span></a></li>
+          <li><a href="#"><span class="en">Contact</span><span class="kr">문의</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span><span class="en">© Books by the Beach. All rights reserved.</span><span class="kr">© Books by the Beach. 모든 권리 보유.</span></span>
+      <span><span class="en">Seoul · Online</span><span class="kr">서울 · 온라인</span></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function setLang(lang, btnEl) {
+    document.body.setAttribute('data-lang', lang);
+    document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+  }
+
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('navLinks').classList.remove('open');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
